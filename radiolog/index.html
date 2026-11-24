@@ -1,76 +1,329 @@
-<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>RadioLog — İnternet Radyosu / Internet Radio</title>
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RadioLog: Canlı radyoyu geri sar</title>
+<meta name="description" content="Dünyanın radyoları tek uygulamada. Canlı yayını duraklat ve geri sar, çalan şarkıları günlüğünde bul, yayını kaydet. Ücretsiz, hesap gerekmez.">
+<meta name="theme-color" content="#07030F">
+<link rel="canonical" href="https://azasdestek.github.io/radiolog/">
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="apple-touch-icon" href="logo.png">
-<meta name="description" content="RadioLog: dünyanın radyoları, canlı yayını duraklat ve geri sar, şarkı günlüğü, kayıt. / World radio, pause and rewind live radio, song log, recording.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RadioLog: Canlı radyoyu geri sar">
+<meta property="og:description" content="Dünya radyoları, canlı yayında geri sarma, şarkı günlüğü ve kayıt.">
+<meta property="og:url" content="https://azasdestek.github.io/radiolog/">
+<meta property="og:image" content="https://azasdestek.github.io/radiolog/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <style>
-body{margin:0;background:#0C0817;color:#F5F3FF;font:16px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
-main{max-width:760px;margin:0 auto;padding:40px 20px 80px}
-.hero{text-align:center;padding:24px 0 8px}
-.logo{width:112px;height:112px;border-radius:26px;display:inline-block;box-shadow:0 10px 40px rgba(168,85,247,.45)}
-h1{font-size:36px;margin:16px 0 4px}
-.tag{color:rgba(245,243,255,.7);margin:0 0 24px}
-.btn{display:inline-block;padding:12px 22px;border-radius:999px;background:linear-gradient(90deg,#A855F7,#EC4899);color:#0C0817;font-weight:700;text-decoration:none}
-.soon{display:inline-block;padding:12px 22px;border-radius:999px;border:1px solid rgba(255,255,255,.2);color:rgba(245,243,255,.7)}
-h2{font-size:20px;margin:40px 0 12px;color:#22D3EE}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px}
-.card b{display:block;margin-bottom:4px}
-.card span{color:rgba(245,243,255,.7);font-size:14px}
-a{color:#E879F9}
-hr{border:0;border-top:1px solid rgba(255,255,255,.12);margin:56px 0}
-nav{display:flex;flex-wrap:wrap;gap:8px 18px;justify-content:flex-end;font-size:14px}
-footer{margin-top:56px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px}
-</style></head>
-<body><main>
-<nav><a href="#tr">Türkçe</a><a href="#en">English</a><a href="privacy.html">Gizlilik / Privacy</a></nav>
+/* Düzen: dev başlık + telefonlar, ardından sürüklenebilir "zaman" şeridi, sonra ekran görüntülü özellik sıraları */
+:root{
+  color-scheme:dark;
+  --bg:#07030F; --ink:#fff; --soft:#D3C8E6; --panel:#150C29; --line:rgba(255,255,255,.14);
+  --violet:#C77DFF; --pink:#FF4D9E; --cyan:#00F5FF; --orange:#FF8C42; --dark:#12051F;
+  --grad:linear-gradient(95deg,var(--violet),var(--pink));
+  --display:"Segoe UI Variable Display","Roboto Flex",Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:Roboto,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:1.0625rem/1.65 var(--body);overflow-x:hidden}
+html[lang=tr] .en,html[lang=en] .tr{display:none!important}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--cyan)}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.06;letter-spacing:-.025em}
+h1{font-size:clamp(2.9rem,7.2vw,5.6rem);font-weight:800}
+h2{font-size:clamp(2rem,4.3vw,3.3rem);font-weight:750}
+h3{font-size:1.2rem;letter-spacing:-.01em;line-height:1.3}
+p{margin:0}
+.wrap{width:min(1160px,100%);margin-inline:auto;padding-inline:max(20px,env(safe-area-inset-left,0px)) max(20px,env(safe-area-inset-right,0px))}
+.lead{font-size:1.2rem;color:var(--soft);max-width:54ch}
 
-<section id="tr">
-<div class="hero">
-<img class="logo" src="logo.png" alt="RadioLog logosu" width="112" height="112">
-<h1>RadioLog</h1>
-<p class="tag">Dünyayı dinle • Kaydet • Keşfet</p>
-<!-- Yayından sonra: href="https://play.google.com/store/apps/details?id=com.asahin.radiolog" ve class="btn" -->
-<span class="soon">Yakında Google Play'de</span>
+.top{position:sticky;top:0;z-index:20;background:rgba(7,3,15,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:22px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;font:700 1.15rem var(--display);color:var(--ink);text-decoration:none;margin-right:auto}
+.brand img{border-radius:10px}
+.top nav{display:flex;gap:22px}
+.top nav a{color:var(--soft);text-decoration:none;font-size:.95rem}
+.top nav a:hover{color:var(--ink)}
+.lang{display:flex;border:1px solid var(--line);border-radius:99px;padding:3px}
+.lang button{font:600 .85rem var(--body);min-width:42px;min-height:36px;border:0;border-radius:99px;background:none;color:var(--soft);cursor:pointer}
+.lang button[aria-pressed=true]{background:var(--grad);color:var(--dark)}
+
+.hero{position:relative;background:radial-gradient(60% 75% at 82% 25%,#4a3aa0 0,transparent 70%),radial-gradient(70% 80% at 62% 105%,#8d1468 0,transparent 70%),linear-gradient(160deg,#130B2E,#2A0F52 70%,#4A106B)}
+.hero .wrap{display:grid;grid-template-columns:1.12fr .88fr;gap:40px;align-items:center;padding-block:64px 72px}
+.hero .copy{display:grid;gap:26px;justify-items:start;min-width:0}
+.hl{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:12px;min-height:60px;padding:10px 28px;border-radius:99px;background:var(--grad);color:var(--dark);font:750 1.08rem var(--body);text-decoration:none;box-shadow:0 10px 40px rgba(255,77,158,.38);transition:transform .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:22px;height:22px}
+.btn.soon{background:rgba(255,255,255,.1);color:var(--ink);border:1px solid rgba(255,255,255,.34);box-shadow:none}
+.btn.soon:hover{transform:none}
+.ghost{color:var(--ink);font-weight:600;text-underline-offset:5px;padding:10px 4px}
+.facts{font-size:.97rem;color:var(--soft)}
+.phones{position:relative;min-width:0;display:flex;justify-content:center;align-items:center;padding-left:60px}
+.phone{border-radius:34px;border:7px solid #0b0515;outline:1px solid rgba(199,125,255,.55);background:#0b0515;box-shadow:0 34px 80px rgba(0,0,0,.55);overflow:hidden;width:min(300px,100%)}
+.phone img{border-radius:27px;width:100%}
+.phones .back{position:absolute;left:0;width:54%;transform:rotate(-8deg);opacity:.9}
+.phones .front{position:relative;transform:rotate(3deg)}
+
+.rewind{background:var(--bg);padding-block:96px}
+.rewind .wrap{display:grid;gap:34px}
+.deck{background:linear-gradient(135deg,#2A0F52,#560f55);border:1px solid var(--line);border-radius:28px;padding:clamp(20px,4vw,44px);display:grid;gap:22px}
+.deckhead{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:end;justify-content:space-between}
+.clock{font:800 clamp(2.5rem,7vw,4.8rem)/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.heard{color:var(--cyan);font-size:1.1rem;min-height:1.7em}
+.strip{position:relative;height:118px}
+.bars{display:flex;align-items:center;gap:3px;height:100%}
+.bars i{flex:1;min-width:0;border-radius:9px;background:rgba(255,255,255,.2)}
+.bars i.on{background:linear-gradient(var(--pink),var(--violet))}
+.strip input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+.needle{position:absolute;top:-6px;bottom:-6px;width:4px;margin-left:-2px;border-radius:4px;background:var(--cyan);box-shadow:0 0 18px var(--cyan);pointer-events:none}
+.strip:focus-within{outline:3px solid var(--cyan);outline-offset:8px;border-radius:8px}
+.scale{display:flex;justify-content:space-between;font-size:.88rem;color:var(--soft);font-variant-numeric:tabular-nums}
+.ctl{display:flex;flex-wrap:wrap;gap:12px}
+.ctl button{font:650 1rem var(--body);min-height:48px;padding:0 22px;border-radius:99px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;cursor:pointer}
+.ctl button:hover{background:rgba(255,255,255,.2)}
+.note{font-size:.92rem;color:var(--soft)}
+
+.row{padding-block:88px}
+.row .wrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(36px,7vw,96px);align-items:center}
+.row .txt{display:grid;gap:22px;min-width:0}
+.row.flip .txt{order:2}
+.row .pic{display:flex;justify-content:center;gap:18px;min-width:0}
+.row .pic .phone:nth-child(2){margin-top:56px}
+.pts{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.pts li{padding-left:26px;position:relative;color:var(--soft)}
+.pts li::before{content:"";position:absolute;left:0;top:.45em;width:6px;height:1em;border-radius:6px;background:var(--tone,var(--violet))}
+.pts b{color:var(--ink)}
+.t1{background:linear-gradient(180deg,#130B2E,#1b1040)}
+.t2{background:linear-gradient(180deg,#1b1040,#3a0f52)}
+.t3{background:linear-gradient(180deg,#3a0f52,#54104f)}
+.t4{background:linear-gradient(180deg,#54104f,#150C29)}
+
+.every{background:#150C29;padding-block:88px}
+.every .wrap{display:grid;gap:44px}
+.tab{border-radius:26px;border:8px solid #0b0515;outline:1px solid rgba(199,125,255,.5);overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.tab img{width:100%}
+.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.cols p{color:var(--soft);margin-top:8px;font-size:1rem}
+.langs{display:flex;flex-wrap:wrap;gap:6px 26px;font:700 clamp(1.15rem,2.3vw,1.7rem) var(--display);color:var(--soft)}
+.langs span:nth-child(3n+1){color:var(--violet)}.langs span:nth-child(3n+2){color:var(--pink)}.langs span:nth-child(3n){color:var(--cyan)}
+
+.plans{padding-block:96px;background:var(--bg)}
+.plans .wrap{display:grid;gap:32px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:500px}
+th,td{text-align:left;padding:17px 18px;border-bottom:1px solid var(--line)}
+thead th{font:750 1.2rem var(--display)}
+tbody th{font-weight:500;color:var(--soft)}
+td:last-child,thead th:last-child{background:rgba(199,125,255,.12)}
+td:last-child{font-weight:650}
+
+.faq{padding-block:24px 96px}
+.faq .wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:48px}
+details{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;padding:18px 0;font-weight:650;font-size:1.1rem}
+details p{color:var(--soft);padding-bottom:20px;max-width:62ch}
+
+.end{background:radial-gradient(70% 120% at 50% 120%,#a3186f,transparent 70%),linear-gradient(160deg,#130B2E,#4A106B);padding-block:92px}
+.end .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:36px}
+.end .logo{border-radius:34px;box-shadow:0 0 70px rgba(199,125,255,.6)}
+.end .copy{display:grid;gap:22px;flex:1 1 320px;min-width:0}
+footer{padding-block:30px;font-size:.93rem;color:var(--soft)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 26px}
+footer p{flex-basis:100%}
+@media(max-width:900px){
+  .top nav{display:none}
+  .hero .wrap,.row .wrap,.faq .wrap{grid-template-columns:1fr}
+  .row.flip .txt{order:0}
+  .cols{grid-template-columns:1fr 1fr}
+  .phones{max-width:380px;margin-inline:auto;width:100%}
+  .row,.every{padding-block:64px}.rewind,.plans{padding-block:68px}
+}
+@media(max-width:480px){.cols{grid-template-columns:1fr}.btn{padding-inline:22px}.tab{border-width:5px;border-radius:18px}th,td{padding:14px 10px}table{min-width:0;font-size:.95rem}.phone{border-radius:26px;border-width:5px}.phone img{border-radius:21px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#"><img src="logo.png" width="38" height="38" alt="">RadioLog</a>
+  <nav><a href="#rewind"><span class="tr" lang="tr">Geri sar</span><span class="en" lang="en">Rewind</span></a><a href="#features"><span class="tr" lang="tr">Özellikler</span><span class="en" lang="en">Features</span></a><a href="#plans">Premium</a><a href="#faq"><span class="tr" lang="tr">Sorular</span><span class="en" lang="en">FAQ</span></a></nav>
+  <div class="lang"><button type="button" data-lang="tr" aria-pressed="true" aria-label="Türkçe">TR</button><button type="button" data-lang="en" aria-pressed="false" aria-label="English">EN</button></div>
+</div></header>
+
+<main>
+<section class="hero"><div class="wrap">
+  <div class="copy">
+    <h1><span class="tr" lang="tr">Canlı radyoyu <span class="hl">geri sar.</span></span><span class="en" lang="en">Rewind <span class="hl">live radio.</span></span></h1>
+    <p class="lead"><span class="tr" lang="tr">Şarkının başını mı kaçırdın? Geri sar. Telefon mu çaldı? Duraklat, kaldığın yerden devam et. RadioLog dünyanın binlerce radyosunu cebine getirir ve çalan şarkıları senin için not eder.</span><span class="en" lang="en">Missed the start of a song? Rewind. Phone rang? Pause and pick up where you left off. RadioLog puts thousands of the world’s stations in your pocket and notes down the songs they play.</span></p>
+    <div class="cta"><a class="btn soon" data-play aria-disabled="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3.5v17l14-8.5z"/></svg><span class="tr" lang="tr">Yakında Google Play'de</span><span class="en" lang="en">Coming soon to Google Play</span></a><a class="ghost" href="#rewind"><span class="tr" lang="tr">Nasıl çalıştığını dene</span><span class="en" lang="en">Try how it works</span></a></div>
+    <p class="facts"><span class="tr" lang="tr">Ücretsiz. Hesap gerekmez. Android 7.0 ve üzeri.</span><span class="en" lang="en">Free. No account. Android 7.0 and up.</span></p>
+  </div>
+  <div class="phones"><div class="phone back"><img class="tr" src="img/tr1.webp" width="640" height="1138" alt="Keşfet ekranı"><img class="en" src="img/en1.webp" width="640" height="1138" alt="Discover screen"></div><div class="phone front"><img class="tr" src="img/tr2.webp" width="640" height="1138" alt="Geri sarılmış canlı yayını gösteren oynatıcı"><img class="en" src="img/en2.webp" width="640" height="1138" alt="Player showing rewound live radio"></div></div>
+</div></section>
+
+<section class="rewind" id="rewind"><div class="wrap">
+  <h2><span class="tr" lang="tr">Şeridi sola sürükle</span><span class="en" lang="en">Drag the strip left</span></h2>
+  <p class="lead"><span class="tr" lang="tr">Çalarken yayın arka planda saklanır. Kaçırdığın anonsa ya da şarkının başına dönersin; şarkı adı da o an duyduğunu gösterir.</span><span class="en" lang="en">While you listen, the broadcast is kept in the background. Go back to the announcement or the intro you missed, and the title follows what you actually hear.</span></p>
+  <div class="deck">
+    <div class="deckhead"><div class="clock" id="clock" aria-live="off"></div><p class="heard" id="heard"></p></div>
+    <div class="strip"><div class="bars" id="bars" aria-hidden="true"></div><div class="needle" id="needle"></div><input id="seek" type="range" min="-300" max="0" step="5" value="-75" aria-label="Geri sarma / Rewind"></div>
+    <div class="scale"><span>−5:00</span><span>−2:30</span><span><span class="tr" lang="tr">Canlı</span><span class="en" lang="en">Live</span></span></div>
+    <div class="ctl"><button type="button" id="b30"><span class="tr" lang="tr">30 sn geri</span><span class="en" lang="en">Back 30 s</span></button><button type="button" id="f30"><span class="tr" lang="tr">30 sn ileri</span><span class="en" lang="en">Forward 30 s</span></button><button type="button" id="live"><span class="tr" lang="tr">Canlıya dön</span><span class="en" lang="en">Go live</span></button></div>
+    <p class="note"><span class="tr" lang="tr">Bu bir gösterimdir, ses çalmaz. Geri sarma MP3 ve AAC yayınlarda çalışır.</span><span class="en" lang="en">This is a silent demo. Rewind works with MP3 and AAC streams.</span></p>
+  </div>
+</div></section>
+
+<div id="features">
+<section class="row t1"><div class="wrap">
+  <div class="txt" style="--tone:var(--cyan)"><h2><span class="tr" lang="tr">Dünyanın radyoları, bir dokunuş uzağında</span><span class="en" lang="en">The world’s radio, one tap away</span></h2>
+  <ul class="pts">
+    <li><span class="tr" lang="tr"><b>Ülkeni seç.</b> En popüler istasyonlara hemen göz at.</span><span class="en" lang="en"><b>Pick a country.</b> Browse its most popular stations right away.</span></li>
+    <li><span class="tr" lang="tr"><b>Türe göre süz.</b> Pop, rock, haber, caz, klasik, dans ve daha fazlası.</span><span class="en" lang="en"><b>Filter by genre.</b> Pop, rock, news, jazz, classical, dance and more.</span></li>
+    <li><span class="tr" lang="tr"><b>Yakınımda.</b> Çevrendeki yerel radyoları bul.</span><span class="en" lang="en"><b>Near me.</b> Find local stations around you.</span></li>
+    <li><span class="tr" lang="tr"><b>Kendi yayınını ekle.</b> Adresini bildiğin her radyo listene girer.</span><span class="en" lang="en"><b>Add your own stream.</b> Any station whose address you know can join your list.</span></li>
+    <li><span class="tr" lang="tr"><b>Bozulan bağlantıyı onarır.</b> Adresi değişen radyonun yenisini arar ve bulunca kaydeder.</span><span class="en" lang="en"><b>Repairs broken links.</b> When a station moves, RadioLog looks for the new address and saves it.</span></li>
+  </ul></div>
+  <div class="pic"><div class="phone"><img class="tr" src="img/tr5.webp" width="640" height="1138" alt="Ülke seçme listesi" loading="lazy"><img class="en" src="img/en5.webp" width="640" height="1138" alt="Country list" loading="lazy"></div><div class="phone"><img class="tr" src="img/tr6.webp" width="640" height="1138" alt="Yakındaki radyolar" loading="lazy"><img class="en" src="img/en6.webp" width="640" height="1138" alt="Nearby stations" loading="lazy"></div></div>
+</div></section>
+
+<section class="row flip t2"><div class="wrap">
+  <div class="txt" style="--tone:var(--orange)"><h2><span class="tr" lang="tr">“Neydi o şarkı?” diye aramazsın</span><span class="en" lang="en">Never wonder “what was that song?”</span></h2>
+  <p class="lead"><span class="tr" lang="tr">Radyo şarkı adını yayınlıyorsa Şarkı Günlüğü onu saati ve istasyonuyla saklar.</span><span class="en" lang="en">When a station broadcasts song titles, the Song Log keeps them with the time and station.</span></p>
+  <ul class="pts">
+    <li><span class="tr" lang="tr"><b>Yıldızla ve ara.</b> Sevdiklerini tek listede topla.</span><span class="en" lang="en"><b>Star and search.</b> Keep your favorites in one list.</span></li>
+    <li><span class="tr" lang="tr"><b>Müzik uygulamanda aç.</b> Spotify, YouTube Music, YouTube ya da Apple Music.</span><span class="en" lang="en"><b>Open in your music app.</b> Spotify, YouTube Music, YouTube or Apple Music.</span></li>
+    <li><span class="tr" lang="tr"><b>Kopyala ya da paylaş.</b> Şarkı adı bir dokunuş uzağında.</span><span class="en" lang="en"><b>Copy or share.</b> The title is one tap away.</span></li>
+  </ul></div>
+  <div class="pic"><div class="phone"><img class="tr" src="img/tr3.webp" width="640" height="1138" alt="Şarkı Günlüğü" loading="lazy"><img class="en" src="img/en3.webp" width="640" height="1138" alt="Song Log" loading="lazy"></div></div>
+</div></section>
+
+<section class="row t3"><div class="wrap">
+  <div class="txt" style="--tone:var(--pink)"><h2><span class="tr" lang="tr">Kaydet, sonra şarkılara böl</span><span class="en" lang="en">Record, then split into songs</span></h2>
+  <ul class="pts">
+    <li><span class="tr" lang="tr"><b>Arka planda sürer.</b> Başka uygulamaya geçsen de kayıt devam eder.</span><span class="en" lang="en"><b>Keeps going in the background.</b> Switch apps and recording continues.</span></li>
+    <li><span class="tr" lang="tr"><b>Parçalara ayırır.</b> Premium ile kayıt, şarkı değişimlerinden adı ve sanatçısı yazılı dosyalara bölünür.</span><span class="en" lang="en"><b>Splits into tracks.</b> With Premium, recordings are cut at song changes into files tagged with title and artist.</span></li>
+    <li><span class="tr" lang="tr"><b>Telefonunda kalır.</b> Kayıtların hiçbir sunucuya yüklenmez.</span><span class="en" lang="en"><b>Stays on your phone.</b> Recordings are not uploaded to any server.</span></li>
+  </ul>
+  <p class="note"><span class="tr" lang="tr">Kayıt kişisel kullanım içindir. Lütfen telif haklarına saygı göster.</span><span class="en" lang="en">Recording is for personal use. Please respect copyright.</span></p></div>
+  <div class="pic"><div class="phone"><img class="tr" src="img/tr4.webp" width="640" height="1138" alt="Kaydı parçalara bölme" loading="lazy"><img class="en" src="img/en4.webp" width="640" height="1138" alt="Splitting a recording" loading="lazy"></div></div>
+</div></section>
+
+<section class="row flip t4"><div class="wrap">
+  <div class="txt" style="--tone:var(--violet)"><h2><span class="tr" lang="tr">Sesini ayarla. Radyoyla uyan, radyoyla uyu.</span><span class="en" lang="en">Shape your sound. Wake up and drift off with radio.</span></h2>
+  <ul class="pts">
+    <li><span class="tr" lang="tr"><b>Ekolayzır.</b> Hazır ayarlar, Premium ile bant ayarları ve cihazın destekliyorsa bas güçlendirme.</span><span class="en" lang="en"><b>Equalizer.</b> Presets, plus band control with Premium and bass boost where your device supports it.</span></li>
+    <li><span class="tr" lang="tr"><b>Radyo alarmı.</b> Güne sevdiğin istasyonla başla.</span><span class="en" lang="en"><b>Radio alarm.</b> Start the day with your favorite station.</span></li>
+    <li><span class="tr" lang="tr"><b>Uyku zamanlayıcısı.</b> Sen uyurken yayını kapatır.</span><span class="en" lang="en"><b>Sleep timer.</b> Stops the radio after you fall asleep.</span></li>
+    <li><span class="tr" lang="tr"><b>Ses normalizasyonu.</b> Kısık yayınları yükseltir.</span><span class="en" lang="en"><b>Volume normalization.</b> Lifts quiet stations.</span></li>
+  </ul></div>
+  <div class="pic"><div class="phone"><img class="tr" src="img/tr8.webp" width="640" height="1138" alt="Ekolayzır" loading="lazy"><img class="en" src="img/en8.webp" width="640" height="1138" alt="Equalizer" loading="lazy"></div><div class="phone"><img class="tr" src="img/tr7.webp" width="640" height="1138" alt="Ayarlar" loading="lazy"><img class="en" src="img/en7.webp" width="640" height="1138" alt="Settings" loading="lazy"></div></div>
+</div></section>
 </div>
 
-<h2>Neler var?</h2>
-<div class="grid">
-<div class="card"><b>🌍 Dünyanın radyoları</b><span>Ülkeni seç, binlerce istasyonu türe göre keşfet ya da yakınındaki radyoları bul.</span></div>
-<div class="card"><b>⏪ Canlı yayını geri sar</b><span>Duraklat, kaldığın yerden devam et, 30 sn geri sar, tek dokunuşla canlıya dön.</span></div>
-<div class="card"><b>🎵 Şarkı Günlüğü</b><span>Radyoda çalan şarkılar saatiyle kaydedilir; bulup sevdiğin müzik uygulamasında aç.</span></div>
-<div class="card"><b>⏺️ Yayın kaydı</b><span>Kişisel kullanım için kaydet; kaydı şarkı değişimlerinden parçalara ayır.</span></div>
-<div class="card"><b>⏰ Radyo alarmı ve uyku zamanlayıcısı</b><span>Sevdiğin radyoyla uyan, radyoyla uyu.</span></div>
-<div class="card"><b>🚗 Android Auto</b><span>Favorilerin ve sesli arama araç ekranında.</span></div>
-<div class="card"><b>🩺 Ölü link yok</b><span>Adresi değişen istasyonlar kendiliğinden onarılır.</span></div>
-<div class="card"><b>🌐 17 dil</b><span>Türkçe, English, Español, Français, Deutsch, Italiano, Polski, Русский, 中文, हिन्दी, Bahasa Indonesia, اردو, 日本語, Naijá, मराठी, বাংলা, Português.</span></div>
-</div>
-<p style="margin-top:24px">Destek: <a href="mailto:azas.destek@gmail.com">azas.destek@gmail.com</a> · <a href="privacy.html#tr">Gizlilik Politikası</a></p>
-</section>
+<section class="every"><div class="wrap">
+  <h2><span class="tr" lang="tr">Evde, yolda, tablette</span><span class="en" lang="en">At home, on the road, on your tablet</span></h2>
+  <div class="tab"><img class="tr" src="img/tr_tablet.webp" width="1400" height="788" loading="lazy" alt="Tablette RadioLog"><img class="en" src="img/en_tablet.webp" width="1400" height="788" loading="lazy" alt="RadioLog on a tablet"></div>
+  <div class="cols">
+    <div><h3>Android Auto</h3><p><span class="tr" lang="tr">Favoriler, son dinlenenler ve sesli arama araç ekranında.</span><span class="en" lang="en">Favorites, recent stations and voice search on your car screen.</span></p></div>
+    <div><h3>Chromecast</h3><p><span class="tr" lang="tr">Radyoyu televizyonuna ya da hoparlörüne gönder.</span><span class="en" lang="en">Send the radio to your TV or speaker.</span></p></div>
+    <div><h3><span class="tr" lang="tr">Hızlı erişim</span><span class="en" lang="en">Quick access</span></h3><p><span class="tr" lang="tr">Kilit ekranı, bildirim, hızlı ayarlar düğmesi, araç takımı ve kısayollar.</span><span class="en" lang="en">Lock screen, notification, quick settings tile, widget and shortcuts.</span></p></div>
+    <div><h3><span class="tr" lang="tr">Açık ve koyu tema</span><span class="en" lang="en">Light and dark themes</span></h3><p><span class="tr" lang="tr">Telefonda da tablette de rahat okunan bir görünüm.</span><span class="en" lang="en">A comfortable look on phones and tablets.</span></p></div>
+  </div>
+  <h2><span class="tr" lang="tr">17 dil konuşur</span><span class="en" lang="en">Speaks 17 languages</span></h2>
+  <div class="langs"><span>Türkçe</span><span>English</span><span>Español</span><span>Français</span><span>Deutsch</span><span>Italiano</span><span>Polski</span><span>Русский</span><span>中文</span><span>हिन्दी</span><span>Bahasa Indonesia</span><span>اردو</span><span>日本語</span><span>Naijá</span><span>मराठी</span><span>বাংলা</span><span>Português</span></div>
+</div></section>
 
-<hr>
+<section class="plans" id="plans"><div class="wrap">
+  <h2><span class="tr" lang="tr">Ücretsiz başla, istersen Premium’a geç</span><span class="en" lang="en">Start free, go Premium if you like</span></h2>
+  <p class="lead"><span class="tr" lang="tr">Premium tek seferlik satın alma ya da yıllık abonelikle açılır. Fiyatı Google Play ülkene göre gösterir.</span><span class="en" lang="en">Premium is a one-time purchase or a yearly subscription. Google Play shows the price for your country.</span></p>
+  <div class="scroll"><table>
+    <thead><tr><th scope="col"><span hidden>-</span></th><th scope="col"><span class="tr" lang="tr">Ücretsiz</span><span class="en" lang="en">Free</span></th><th scope="col">Premium</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><span class="tr" lang="tr">Geri sarma</span><span class="en" lang="en">Rewind</span></th><td><span class="tr" lang="tr">5 dakika</span><span class="en" lang="en">5 minutes</span></td><td><span class="tr" lang="tr">Daha uzun</span><span class="en" lang="en">Longer</span></td></tr>
+      <tr><th scope="row"><span class="tr" lang="tr">Kayıt</span><span class="en" lang="en">Recording</span></th><td><span class="tr" lang="tr">15 dakika</span><span class="en" lang="en">15 minutes</span></td><td><span class="tr" lang="tr">Süre sınırı yok</span><span class="en" lang="en">No time limit</span></td></tr>
+      <tr><th scope="row"><span class="tr" lang="tr">Şarkılara bölme</span><span class="en" lang="en">Song splitting</span></th><td><span class="tr" lang="tr">Yok</span><span class="en" lang="en">No</span></td><td><span class="tr" lang="tr">Var</span><span class="en" lang="en">Yes</span></td></tr>
+      <tr><th scope="row"><span class="tr" lang="tr">Şarkı günlüğü</span><span class="en" lang="en">Song log</span></th><td><span class="tr" lang="tr">Son 7 gün</span><span class="en" lang="en">Last 7 days</span></td><td><span class="tr" lang="tr">Tüm geçmiş</span><span class="en" lang="en">Full history</span></td></tr>
+      <tr><th scope="row"><span class="tr" lang="tr">Ekolayzır</span><span class="en" lang="en">Equalizer</span></th><td><span class="tr" lang="tr">Hazır ayarlar</span><span class="en" lang="en">Presets</span></td><td><span class="tr" lang="tr">Bantlar ve bas</span><span class="en" lang="en">Bands and bass</span></td></tr>
+      <tr><th scope="row"><span class="tr" lang="tr">Reklam</span><span class="en" lang="en">Ads</span></th><td><span class="tr" lang="tr">Var</span><span class="en" lang="en">Yes</span></td><td><span class="tr" lang="tr">Yok</span><span class="en" lang="en">None</span></td></tr>
+    </tbody></table></div>
+  <p class="note"><span class="tr" lang="tr">Ücretsiz sürümde tam ekran reklam yalnızca uygulamayı açarken ya da istasyon değiştirirken çıkar. Oynatıcı ve kilit ekranında reklam yoktur. Kısa bir video izleyip 1 saat reklamsız dinleyebilirsin.</span><span class="en" lang="en">In the free version, full-screen ads appear only when you open the app or switch stations. There are no ads on the player or lock screen. Watch a short video for one ad-free hour.</span></p>
+</div></section>
 
-<section id="en" lang="en">
-<div class="hero">
-<img class="logo" src="logo.png" alt="RadioLog logo" width="112" height="112">
-<h1>RadioLog</h1>
-<p class="tag">Listen to the world • Record • Discover</p>
-<span class="soon">Coming soon on Google Play</span>
-</div>
+<section class="faq" id="faq"><div class="wrap">
+  <h2><span class="tr" lang="tr">Merak edilenler</span><span class="en" lang="en">Good to know</span></h2>
+  <div>
+    <details open><summary><span class="tr" lang="tr">Hesap açmam gerekiyor mu?</span><span class="en" lang="en">Do I need an account?</span></summary><p><span class="tr" lang="tr">Hayır. Uygulamayı açıp dinlemeye başlarsın. Favorilerin, şarkı günlüğün ve kayıtların telefonunda durur.</span><span class="en" lang="en">No. Open the app and start listening. Your favorites, song log and recordings stay on your phone.</span></p></details>
+    <details><summary><span class="tr" lang="tr">Konumum kullanılıyor mu?</span><span class="en" lang="en">Is my location used?</span></summary><p><span class="tr" lang="tr">Yalnızca “Yakınımda”ya dokunduğunda ve izin verdiğinde, yaklaşık konumun kullanılır. Ayrıntılar <a href="privacy.html#tr">gizlilik politikasında</a>.</span><span class="en" lang="en">Only your approximate location, and only when you tap “Near me” and allow it. See the <a href="privacy.html#en">privacy policy</a>.</span></p></details>
+    <details><summary><span class="tr" lang="tr">İnternet kullanıyor mu?</span><span class="en" lang="en">Does it use data?</span></summary><p><span class="tr" lang="tr">Evet, yayınlar internetten gelir. Mobil veride kullanım istasyonun kalitesine göre değişir.</span><span class="en" lang="en">Yes, stations stream over the internet. Mobile data use depends on the station’s quality.</span></p></details>
+    <details><summary><span class="tr" lang="tr">İstasyonlar nereden geliyor?</span><span class="en" lang="en">Where do the stations come from?</span></summary><p><span class="tr" lang="tr">Açık topluluk veritabanı Radio Browser’dan. Türkiye için ayrıca elle seçilmiş kategoriler var. Yayınlar ilgili radyolara aittir.</span><span class="en" lang="en">From the open Radio Browser community database, plus hand-picked categories for Türkiye. Broadcasts belong to their stations.</span></p></details>
+  </div>
+</div></section>
 
-<h2>Features</h2>
-<div class="grid">
-<div class="card"><b>🌍 World radio</b><span>Pick your country, explore thousands of stations by genre or find stations near you.</span></div>
-<div class="card"><b>⏪ Rewind live radio</b><span>Pause and resume where you left off, rewind 30 s, jump back to live with one tap.</span></div>
-<div class="card"><b>🎵 Song Log</b><span>Songs played on the radio are saved with the time; open them in your favorite music app.</span></div>
-<div class="card"><b>⏺️ Stream recording</b><span>Record for personal use and split recordings at each song change.</span></div>
-<div class="card"><b>⏰ Radio alarm and sleep timer</b><span>Wake up and fall asleep with your favorite station.</span></div>
-<div class="card"><b>🚗 Android Auto</b><span>Your favorites and voice search on your car screen.</span></div>
-<div class="card"><b>🩺 No dead links</b><span>Stations that changed their stream address are repaired automatically.</span></div>
-<div class="card"><b>🌐 17 languages</b><span>Including English, Español, Français, Deutsch, Português, 日本語 and more.</span></div>
-</div>
-<p style="margin-top:24px">Support: <a href="mailto:azas.destek@gmail.com">azas.destek@gmail.com</a> · <a href="privacy.html#en">Privacy Policy</a></p>
-</section>
+<section class="end"><div class="wrap">
+  <img class="logo" src="logo.png" width="150" height="150" alt="RadioLog logo">
+  <div class="copy"><h2><span class="tr" lang="tr">Dünyayı dinle. Kaydet. Keşfet.</span><span class="en" lang="en">Listen to the world. Record. Discover.</span></h2><div class="cta"><a class="btn soon" data-play aria-disabled="true"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3.5v17l14-8.5z"/></svg><span class="tr" lang="tr">Yakında Google Play'de</span><span class="en" lang="en">Coming soon to Google Play</span></a></div></div>
+</div></section>
+</main>
 
-<footer><a href="https://azasdestek.github.io">← Azas Lab</a><a href="privacy.html">Gizlilik / Privacy</a></footer>
-</main></body></html>
+<footer><div class="wrap">
+  <a href="https://azasdestek.github.io">Azas Lab</a><a class="tr" href="privacy.html#tr">Gizlilik Politikası</a><a class="en" href="privacy.html#en">Privacy Policy</a><a href="mailto:azas.destek@gmail.com">azas.destek@gmail.com</a>
+  <p><span class="tr" lang="tr">Ekran görüntülerindeki radyo adları ve logoları ilgili sahiplerine aittir. Google Play ve Android, Google LLC’nin ticari markalarıdır.</span><span class="en" lang="en">Station names and logos in screenshots belong to their owners. Google Play and Android are trademarks of Google LLC.</span></p>
+</div></footer>
+
+<script>
+/* UYGULAMA YAYINLANINCA: aşağıdaki false değerini true yapın. Düğmeler Google Play'e bağlanır. */
+var PLAY_YAYINDA = false;
+var PLAY_URL = 'https://play.google.com/store/apps/details?id=com.asahin.radiolog';
+
+if (PLAY_YAYINDA) document.querySelectorAll('[data-play]').forEach(function (el) {
+  el.href = PLAY_URL; el.classList.remove('soon'); el.removeAttribute('aria-disabled');
+  el.querySelector('.tr').textContent = "Google Play'den indir";
+  el.querySelector('.en').textContent = 'Get it on Google Play';
+});
+
+var seek = document.getElementById('seek'), bars = document.getElementById('bars');
+var N = 75, html = '';
+for (var i = 0; i < N; i++) html += '<i style="height:' + Math.round(16 + 76 * Math.abs(Math.sin(i * .43) * Math.cos(i * .17 + .6))) + '%"></i>';
+bars.innerHTML = html;
+var parts = [
+  [-225, 'Haber bülteni', 'News bulletin'],
+  [-160, 'Sunucunun anonsu', 'Host announcement'],
+  [-70, 'Kaçırdığın şarkının başı', 'The intro you missed'],
+  [0, 'Şu an yayındaki şarkı', 'The song on air now']
+];
+function draw() {
+  var v = +seek.value, en = document.documentElement.lang === 'en', s = -v;
+  var t = '−' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+  document.getElementById('clock').textContent = v === 0 ? (en ? 'Live' : 'Canlı') : t;
+  var p = parts.find(function (x) { return v <= x[0]; });
+  document.getElementById('heard').textContent = p[en ? 2 : 1];
+  var k = (v + 300) / 300;
+  document.getElementById('needle').style.left = k * 100 + '%';
+  for (var i = 0; i < N; i++) bars.children[i].className = i / N < k ? 'on' : '';
+  seek.setAttribute('aria-valuetext', v === 0 ? (en ? 'Live' : 'Canlı') : t);
+}
+function step(d) { seek.value = +seek.value + d; draw(); }
+seek.addEventListener('input', draw);
+document.getElementById('b30').onclick = function () { step(-30); };
+document.getElementById('f30').onclick = function () { step(30); };
+document.getElementById('live').onclick = function () { seek.value = 0; draw(); };
+
+function setLang(l) {
+  document.documentElement.lang = l;
+  document.title = l === 'en' ? 'RadioLog: Rewind live radio' : 'RadioLog: Canlı radyoyu geri sar';
+  document.querySelectorAll('[data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lang === l); });
+  draw();
+}
+document.querySelectorAll('[data-lang]').forEach(function (b) {
+  b.onclick = function () { setLang(b.dataset.lang); try { localStorage.setItem('radiolog-lang', b.dataset.lang); } catch (e) {} };
+});
+var saved = null; try { saved = localStorage.getItem('radiolog-lang'); } catch (e) {}
+var hash = location.hash === '#en' ? 'en' : location.hash === '#tr' ? 'tr' : null;
+setLang(hash || saved || ((navigator.language || 'tr').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en'));
+</script>
+</body>
+</html>
