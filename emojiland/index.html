@@ -3,68 +3,814 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Emojiland — Azas Lab.</title>
-<meta name="description" content="Emojiland: Emojilerden Türkçe kelimeyi bul! Her gün yeni bulmaca, 6 tahmin hakkı, Serbest Mod ve liderlik tablosu.">
+<title>Emojiland: Emojiden Kelime Bul — Azas Lab.</title>
+<meta name="description" content="Emojiland: 2–3 emojiden Türkçe kelimeyi 6 denemede bul! Her gün yeni bulmaca, 4400 elle hazırlanmış bulmaca, Günün şampiyonları sıralaması. Ücretsiz, Google Play'de.">
+<meta name="theme-color" content="#070C3A">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="canonical" href="https://azasdestek.github.io/emojiland/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Emojiland: Emojiden Kelime Bul">
+<meta property="og:description" content="2–3 emoji, tek kelime, 6 tahmin hakkı. Her gün yeni bulmaca!">
+<meta property="og:image" content="https://azasdestek.github.io/emojiland/paylasim.png">
+<meta property="og:url" content="https://azasdestek.github.io/emojiland/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#0e1020; --card:#171a30; --line:#262a48; --text:#eef0fb; --muted:#9aa0c3; --accent:#ff4d8d; --ok:#2bb673; --near:#f2994a; }
-  @media (prefers-color-scheme: light) { :root { --bg:#f5f6fb; --card:#ffffff; --line:#e3e5f0; --text:#1b1e33; --muted:#5d6382; --accent:#d81b6a; } }
+  :root {
+    --navy-950:#050829; --navy-900:#070C3A; --navy-800:#0D1450; --navy-700:#141B5C; --navy-600:#1E2A7A;
+    --panel:#111A55; --border:#26307A; --tile:#575C90; --tile-border:#6E73A8; --absent:#0E1648;
+    --correct:#12B37E; --present:#F39C12; --yellow:#FFC21A; --gold:#FFD54A; --key:#E8EBF5; --key-text:#1B1F3B;
+    --text:#FFFFFF; --muted:#B7BCE6; --dim:#8C92C9;
+    --radius:20px;
+  }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-  main { max-width:720px; margin:0 auto; padding:40px 16px 64px; }
-  .back { font-size:.92rem; }
-  h1 { margin:18px 0 4px; font-size:2.2rem; letter-spacing:.02em; }
-  .sub { margin:0 0 24px; color:var(--muted); }
-  .clue { display:flex; gap:10px; font-size:2.4rem; margin:8px 0 10px; }
-  .clue span { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:4px 12px; }
-  .tiles { display:flex; gap:6px; margin-bottom:28px; }
-  .tiles b { width:40px; height:40px; display:grid; place-items:center; border-radius:8px; background:var(--ok); color:#fff; font-size:1.2rem; }
-  .tiles b.n { background:var(--near); }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; margin-bottom:14px; }
-  .card h2 { margin:0 0 8px; font-size:1.1rem; }
-  ul { margin:0; padding-left:20px; }
-  .en { color:var(--muted); font-size:.92rem; }
-  a { color:var(--accent); text-decoration:none; font-weight:600; }
-  a:hover { text-decoration:underline; }
-  .play { display:inline-block; margin:6px 0 18px; padding:10px 18px; border-radius:12px; background:var(--accent); color:#fff; }
-  .play:hover { text-decoration:none; opacity:.9; }
-  footer { margin-top:32px; color:var(--muted); font-size:.92rem; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; color:var(--text); background:var(--navy-900);
+    font:16px/1.6 "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a { color:inherit; }
+  img { max-width:100%; display:block; }
+  .wrap { max-width:1140px; margin:0 auto; padding:0 16px; }
+  .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  /* ---------- Üst çubuk ---------- */
+  .nav { position:sticky; top:0; z-index:30; backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    background:rgba(7,12,58,.72); border-bottom:1px solid rgba(38,48,122,.6); }
+  .nav .wrap { display:flex; align-items:center; gap:14px; height:64px; }
+  .brand { display:flex; align-items:center; gap:10px; text-decoration:none; font-weight:800; font-size:1.15rem; letter-spacing:.02em; }
+  .brand img { width:36px; height:36px; border-radius:10px; }
+  .nav-links { margin-left:auto; display:flex; align-items:center; gap:22px; font-size:.92rem; font-weight:500; }
+  .nav-links a { text-decoration:none; color:var(--muted); }
+  .nav-links a:hover { color:var(--text); }
+  .nav .btn-sm { color:var(--key-text); }
+  @media (max-width:760px){ .nav-links .hide-m { display:none; } }
+
+  /* ---------- Düğmeler ---------- */
+  .btn { display:inline-flex; align-items:center; gap:10px; text-decoration:none; font-weight:700; border-radius:16px;
+    transition:transform .15s ease, box-shadow .2s ease, background .2s; cursor:pointer; border:0; font-family:inherit; }
+  .btn:active { transform:translateY(1px) scale(.99); }
+  .btn-play { background:var(--yellow); color:var(--key-text); padding:14px 24px; font-size:1.05rem;
+    box-shadow:0 10px 30px rgba(255,194,26,.35), inset 0 -3px 0 rgba(0,0,0,.15); }
+  .btn-play:hover { box-shadow:0 14px 40px rgba(255,194,26,.5), inset 0 -3px 0 rgba(0,0,0,.15); transform:translateY(-2px); }
+  .btn-play svg { width:26px; height:26px; flex:none; }
+  .btn-play small { display:block; font-size:.68rem; font-weight:600; opacity:.75; line-height:1.1; letter-spacing:.04em; text-transform:uppercase; }
+  .btn-play span { line-height:1.15; text-align:left; }
+  .btn-ghost { background:transparent; color:var(--text); padding:13px 20px; border:1.5px solid var(--border); }
+  .btn-ghost:hover { border-color:var(--yellow); color:var(--yellow); }
+  .btn-sm { padding:8px 14px; font-size:.88rem; border-radius:12px; background:var(--yellow); }
+
+  /* ---------- Hero ---------- */
+  .hero { position:relative; padding:64px 0 40px; overflow:hidden; isolation:isolate; }
+  .hero::before { content:""; position:absolute; inset:-20% -10% auto; height:900px; z-index:-2;
+    background:radial-gradient(60% 50% at 70% 35%, rgba(40,58,170,.75), transparent 70%),
+               radial-gradient(40% 40% at 10% 10%, rgba(255,194,26,.10), transparent 70%); }
+  .floaters { position:absolute; inset:0; z-index:-1; pointer-events:none; }
+  .floaters span { position:absolute; font-size:2.4rem; opacity:.22; animation:float 12s ease-in-out infinite; filter:saturate(1.1); }
+  @keyframes float { 0%,100% { transform:translateY(0) rotate(-6deg); } 50% { transform:translateY(-26px) rotate(8deg); } }
+  @media (prefers-reduced-motion:reduce){ .floaters span, .tile.pop, .phone.tilt { animation:none !important; } }
+
+  .hero-grid { display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center; }
+  @media (max-width:900px){ .hero-grid { grid-template-columns:1fr; text-align:center; } .hero-cta, .badges { justify-content:center; } }
+  .eyebrow { display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; font-size:.82rem; font-weight:600;
+    background:rgba(18,179,126,.14); color:#5BE3B1; border:1px solid rgba(18,179,126,.35); }
+  .eyebrow i { width:8px; height:8px; border-radius:50%; background:var(--correct); box-shadow:0 0 0 4px rgba(18,179,126,.25); animation:pulse 2s infinite; }
+  @keyframes pulse { 50% { box-shadow:0 0 0 8px rgba(18,179,126,0); } }
+  h1 { font-size:clamp(2.3rem, 5.6vw, 4.1rem); line-height:1.05; margin:18px 0 14px; font-weight:900; letter-spacing:-.01em; }
+  h1 em { font-style:normal; color:var(--yellow); }
+  .lead { font-size:clamp(1.02rem, 1.6vw, 1.2rem); color:var(--muted); margin:0 0 26px; max-width:34em; }
+  @media (max-width:900px){ .lead { margin-inline:auto; } }
+  .hero-cta { display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  .badges { display:flex; flex-wrap:wrap; gap:18px; margin-top:26px; color:var(--muted); font-size:.9rem; }
+  .badges b { color:var(--text); font-weight:700; }
+
+  .clue-demo { display:flex; align-items:center; gap:10px; margin:0 0 6px; }
+  @media (max-width:900px){ .clue-demo { justify-content:center; } }
+  .clue-demo .em { width:62px; height:62px; display:grid; place-items:center; font-size:2.1rem; border-radius:16px;
+    background:var(--tile); border:2px solid var(--tile-border); box-shadow:0 8px 20px rgba(0,0,0,.25); }
+  .clue-demo .plus { color:var(--muted); font-weight:700; font-size:1.3rem; }
+  .tiles-demo { display:flex; gap:8px; margin:10px 0 0; }
+  @media (max-width:900px){ .tiles-demo { justify-content:center; } }
+  .tiles-demo b { width:48px; height:48px; display:grid; place-items:center; border-radius:10px; font-weight:800; font-size:1.35rem;
+    background:var(--correct); animation:flipIn .6s both; }
+  .tiles-demo b.p { background:var(--present); }
+  .tiles-demo b:nth-child(2){animation-delay:.12s} .tiles-demo b:nth-child(3){animation-delay:.24s}
+  .tiles-demo b:nth-child(4){animation-delay:.36s} .tiles-demo b:nth-child(5){animation-delay:.48s}
+  @keyframes flipIn { from { transform:rotateX(90deg); opacity:0; } to { transform:none; opacity:1; } }
+
+  /* ---------- Telefon çerçevesi ---------- */
+  .phone { position:relative; width:min(330px, 86vw); aspect-ratio:9/19; margin:0 auto; border-radius:46px; padding:12px;
+    background:linear-gradient(160deg,#20264d,#090c26); box-shadow:0 40px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06) inset; }
+  .phone.tilt { animation:bob 7s ease-in-out infinite; }
+  @keyframes bob { 0%,100% { transform:translateY(0) rotate(-1.5deg); } 50% { transform:translateY(-10px) rotate(1deg); } }
+  .screen { position:relative; height:100%; border-radius:36px; overflow:hidden; background:linear-gradient(180deg,var(--navy-800),var(--navy-900));
+    display:flex; flex-direction:column; padding:30px 12px 10px; font-size:12px; }
+  .screen::before { content:""; position:absolute; top:10px; left:50%; width:12px; height:12px; margin-left:-6px; border-radius:50%; background:#000; }
+  .sbar { position:absolute; top:7px; left:22px; right:22px; display:flex; justify-content:space-between; font-size:10px; font-weight:600; color:#cfd3f5; }
+  .topbar { display:flex; align-items:center; gap:8px; margin:4px 2px 10px; font-weight:800; font-size:13px; }
+  .topbar .coins { margin-left:auto; padding:3px 9px; border-radius:999px; border:1.5px solid var(--yellow); color:var(--yellow); font-size:11px; }
+  .s-clue { display:flex; justify-content:center; align-items:center; gap:6px; }
+  .s-clue div { width:44px; height:44px; display:grid; place-items:center; font-size:24px; border-radius:11px; background:var(--tile); border:1.5px solid var(--tile-border); }
+  .s-clue i { color:var(--muted); font-style:normal; font-weight:700; }
+  .s-labels { display:flex; justify-content:center; gap:22px; margin:3px 0 6px; color:var(--yellow); font-size:9.5px; }
+  .s-pills { display:flex; justify-content:center; gap:6px; margin-bottom:8px; }
+  .s-pills span { padding:2px 10px; border-radius:999px; background:var(--navy-700); border:1px solid var(--border); color:var(--muted); font-size:9.5px; font-weight:600; }
+  .s-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; width:76%; margin:0 auto; }
+  .s-grid b { aspect-ratio:1; display:grid; place-items:center; border-radius:6px; font-size:15px; font-weight:800; background:var(--tile); border:1.5px solid var(--tile-border); }
+  .s-grid b.c { background:var(--correct); border-color:var(--correct); }
+  .s-grid b.p { background:var(--present); border-color:var(--present); }
+  .s-grid b.a { background:var(--absent); border-color:var(--absent); }
+  .s-grid b.sel { border:2px solid var(--yellow); background:rgba(255,194,26,.18); box-shadow:0 0 0 2px rgba(255,194,26,.25); }
+  .s-hints { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin:auto 0 5px; }
+  .s-hints div { border:1px solid rgba(255,194,26,.45); border-radius:9px; text-align:center; padding:4px 0; font-size:8.5px; font-weight:700; line-height:1.25; }
+  .s-hints div small { display:block; color:var(--yellow); font-weight:600; }
+  .s-hints div.free { background:var(--correct); border-color:var(--correct); }
+  .s-hints div.free small { color:#eafff6; }
+  .s-kb { display:flex; flex-direction:column; gap:3px; }
+  .s-kb div { display:flex; gap:2.5px; }
+  .s-kb span { flex:1; height:25px; display:grid; place-items:center; border-radius:5px; background:var(--key); color:var(--key-text); font-weight:700; font-size:9.5px; }
+  .s-kb span.c { background:var(--correct); color:#fff; } .s-kb span.p { background:var(--present); color:#fff; } .s-kb span.a { background:var(--absent); color:#fff; }
+  .s-kb span.w13 { flex:1.3; } .s-kb span.w24 { flex:2.4; background:var(--correct); color:#fff; font-size:8.5px; } .s-kb span.sp { flex:.5; background:none; }
+
+  /* Ekran: ana sayfa */
+  .s-logo { text-align:center; font-weight:900; font-size:23px; color:var(--yellow); letter-spacing:.01em; margin-top:2px; }
+  .s-sub { text-align:center; color:var(--muted); font-size:10px; margin-bottom:9px; }
+  .s-modes { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:7px; }
+  .s-modes div { background:var(--panel); border:1px solid var(--border); border-radius:12px; text-align:center; padding:8px 4px; font-weight:700; font-size:10.5px; }
+  .s-modes div em { display:block; font-style:normal; font-size:19px; }
+  .s-modes div small { display:block; color:var(--muted); font-weight:500; font-size:8.5px; }
+  .s-card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:9px 10px; margin-bottom:7px; }
+  .s-card h4 { margin:0 0 6px; font-size:11.5px; display:flex; justify-content:space-between; }
+  .s-card h4 span { color:var(--yellow); }
+  .s-q { display:flex; justify-content:center; gap:5px; margin-bottom:7px; }
+  .s-q div { width:34px; height:34px; border-radius:9px; background:var(--tile); display:grid; place-items:center; font-weight:800; font-size:17px; color:#d6d9f5; }
+  .s-oyna { background:var(--yellow); color:var(--key-text); font-weight:800; text-align:center; border-radius:10px; padding:6px 0; font-size:12px; }
+  .s-streak { text-align:center; font-size:9.5px; margin-top:5px; color:var(--muted); } .s-streak b { color:#FF9F43; }
+  .s-lb { display:flex; align-items:center; gap:6px; border:1px solid var(--border); border-radius:10px; padding:4px 7px; margin-bottom:4px; font-weight:700; font-size:10.5px; }
+  .s-lb .av { width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:12px; border:1.5px solid var(--gold); }
+  .s-lb .sc { margin-left:auto; color:var(--yellow); font-weight:800; }
+  .s-lb.me { background:rgba(255,194,26,.12); border-color:var(--yellow); }
+  .s-link { color:var(--yellow); font-weight:700; font-size:10px; margin-top:3px; }
+
+  /* Ekran: sonuç */
+  .s-result { margin:auto 0; background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:14px 12px; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,.4); }
+  .s-result h5 { margin:0; font-size:18px; font-weight:900; }
+  .s-result .emj { font-size:20px; margin:4px 0; }
+  .s-result .ans { color:var(--yellow); font-weight:900; font-size:22px; letter-spacing:3px; }
+  .s-mean { display:inline-block; margin:5px 0 9px; padding:3px 12px; border-radius:999px; border:1px solid rgba(255,194,26,.6); color:var(--yellow); font-weight:700; font-size:10px; }
+  .s-mean small { color:var(--muted); font-weight:500; }
+  .s-stats { display:flex; justify-content:space-around; margin-bottom:6px; }
+  .s-stats div { font-weight:900; font-size:16px; } .s-stats small { display:block; font-weight:500; color:var(--muted); font-size:9px; }
+  .s-break { color:var(--muted); font-size:8.5px; margin-bottom:9px; }
+  .s-share { background:var(--correct); border-radius:10px; padding:6px 0; font-weight:800; font-size:11.5px; margin-bottom:5px; }
+  .s-ghost { border:1px solid var(--border); border-radius:10px; padding:5px 0; font-weight:700; font-size:10.5px; color:var(--muted); }
+  .confetti { position:absolute; inset:0; pointer-events:none; }
+  .confetti i { position:absolute; width:6px; height:10px; border-radius:2px; opacity:.9; }
+
+  /* ---------- Bölümler ---------- */
+  section { padding:72px 0; position:relative; }
+  .sec-head { text-align:center; max-width:720px; margin:0 auto 40px; }
+  .sec-head .tag { color:var(--yellow); font-weight:700; letter-spacing:.12em; text-transform:uppercase; font-size:.8rem; }
+  h2 { font-size:clamp(1.8rem, 3.6vw, 2.6rem); line-height:1.15; margin:8px 0 12px; font-weight:800; }
+  h2 em { font-style:normal; color:var(--yellow); }
+  .sec-head p { color:var(--muted); margin:0; }
+
+  /* Deneme bulmacası */
+  .try { background:linear-gradient(180deg, transparent, rgba(13,20,80,.7) 20%, rgba(13,20,80,.7) 80%, transparent); }
+  .game { max-width:470px; margin:0 auto; background:var(--panel); border:1px solid var(--border); border-radius:28px; padding:22px 16px 16px;
+    box-shadow:0 30px 70px rgba(0,0,0,.45); position:relative; }
+  .g-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; font-weight:700; }
+  .g-top .num { color:var(--yellow); }
+  .g-top button { background:var(--navy-700); border:1px solid var(--border); color:var(--muted); border-radius:10px; padding:5px 11px; font:600 .8rem Poppins, sans-serif; cursor:pointer; }
+  .g-top button:hover { color:var(--text); border-color:var(--yellow); }
+  .g-clue { display:flex; justify-content:center; align-items:center; gap:10px; margin-bottom:8px; }
+  .g-clue div { width:70px; height:70px; display:grid; place-items:center; font-size:2.3rem; border-radius:16px; background:var(--tile); border:2px solid var(--tile-border); }
+  .g-clue i { font-style:normal; color:var(--muted); font-weight:700; font-size:1.2rem; }
+  .g-pills { display:flex; justify-content:center; gap:8px; margin-bottom:14px; }
+  .g-pills span { padding:3px 12px; border-radius:999px; background:var(--navy-700); border:1px solid var(--border); color:var(--muted); font-size:.8rem; font-weight:600; }
+  .board { display:grid; gap:6px; width:min(310px, 100%); margin:0 auto 14px; }
+  @media (max-width:560px){ .board { width:min(250px, 70%); gap:5px; } .board .row { gap:5px; } .g-clue div { width:58px; height:58px; font-size:1.9rem; } .kb button { height:44px; } }
+  .row { display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; }
+  .row.shake { animation:shake .4s; }
+  @keyframes shake { 20%,60% { transform:translateX(-7px); } 40%,80% { transform:translateX(7px); } }
+  .tile { aspect-ratio:1; display:grid; place-items:center; border-radius:9px; font-weight:800; font-size:clamp(1.3rem, 6vw, 1.7rem);
+    background:var(--tile); border:2px solid var(--tile-border); user-select:none; transition:background .2s, border-color .2s; }
+  .tile.filled { border-color:#9aa0d6; }
+  .tile.active { cursor:pointer; }
+  .tile.sel { border-color:var(--yellow); background:rgba(255,194,26,.16); box-shadow:0 0 0 3px rgba(255,194,26,.22); }
+  .tile.pop { animation:pop .12s; }
+  @keyframes pop { 50% { transform:scale(1.08); } }
+  .tile.flip { animation:flip .5s both; }
+  @keyframes flip { 0% { transform:rotateX(0); } 50% { transform:rotateX(90deg); } 100% { transform:rotateX(0); } }
+  .tile.c { background:var(--correct); border-color:var(--correct); } .tile.p { background:var(--present); border-color:var(--present); } .tile.a { background:var(--absent); border-color:var(--absent); }
+  .tile.win { animation:bounce .5s both; }
+  @keyframes bounce { 40% { transform:translateY(-12px); } 70% { transform:translateY(3px); } }
+  .kb { display:flex; flex-direction:column; gap:6px; user-select:none; }
+  .kb .r { display:flex; gap:4px; }
+  .kb button { flex:1; min-width:0; height:48px; border:0; border-radius:8px; background:var(--key); color:var(--key-text); font:700 clamp(.78rem, 3.4vw, 1rem) Poppins, sans-serif;
+    cursor:pointer; padding:0; transition:transform .05s, filter .15s; }
+  .kb button:hover { filter:brightness(.94); } .kb button:active { transform:scale(.95); }
+  .kb button.c { background:var(--correct); color:#fff; } .kb button.p { background:var(--present); color:#fff; } .kb button.a { background:var(--absent); color:#8a90c8; }
+  .kb .w13 { flex:1.3; } .kb .sp { flex:.5; visibility:hidden; }
+  .kb .enter { flex:2.4; background:var(--correct); color:#fff; font-size:clamp(.7rem, 3vw, .9rem); }
+  .kb svg { width:22px; height:22px; }
+  .toast { position:absolute; left:50%; top:14px; transform:translate(-50%, -8px); background:#fff; color:var(--key-text); font-weight:700; font-size:.9rem;
+    padding:8px 14px; border-radius:10px; opacity:0; pointer-events:none; transition:.25s; white-space:nowrap; z-index:5; box-shadow:0 10px 30px rgba(0,0,0,.35); }
+  .toast.show { opacity:1; transform:translate(-50%, 0); }
+  .g-hint { text-align:center; color:var(--dim); font-size:.82rem; margin:12px 0 0; }
+  .g-end { position:absolute; inset:0; border-radius:28px; background:rgba(7,12,58,.9); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+    display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; z-index:6; }
+  .g-end.show { display:flex; animation:fade .35s both; }
+  @keyframes fade { from { opacity:0; } }
+  .g-end .big { font-size:3rem; line-height:1; }
+  .g-end h3 { margin:10px 0 4px; font-size:1.6rem; font-weight:900; }
+  .g-end .ans { color:var(--yellow); font-weight:900; font-size:1.8rem; letter-spacing:4px; margin:2px 0 8px; }
+  .g-end p { color:var(--muted); margin:0 0 18px; max-width:22em; }
+  .g-end .mean { color:var(--yellow); font-weight:600; font-size:.9rem; text-decoration:none; border:1px solid rgba(255,194,26,.55); padding:4px 14px; border-radius:999px; margin-bottom:16px; }
+  .g-end .mean:hover { background:rgba(255,194,26,.12); }
+  .g-end .acts { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+
+  /* Özellikler */
+  .feat-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+  @media (max-width:900px){ .feat-grid { grid-template-columns:repeat(2, 1fr); } }
+  @media (max-width:560px){ .feat-grid { grid-template-columns:1fr; } }
+  .feat { background:linear-gradient(180deg, rgba(30,42,122,.55), rgba(17,26,85,.55)); border:1px solid var(--border); border-radius:var(--radius); padding:22px;
+    transition:transform .2s, border-color .2s; }
+  .feat:hover { transform:translateY(-4px); border-color:rgba(255,194,26,.5); }
+  .feat .ic { width:52px; height:52px; display:grid; place-items:center; font-size:1.7rem; border-radius:14px; background:var(--navy-700); border:1px solid var(--border); margin-bottom:12px; }
+  .feat h3 { margin:0 0 6px; font-size:1.1rem; }
+  .feat p { margin:0; color:var(--muted); font-size:.93rem; }
+
+  /* Nasıl oynanır */
+  .how { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+  @media (max-width:820px){ .how { grid-template-columns:1fr; } }
+  .step { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:22px; position:relative; }
+  .step .n { position:absolute; top:-14px; left:22px; width:32px; height:32px; border-radius:50%; background:var(--yellow); color:var(--key-text); display:grid; place-items:center; font-weight:900; }
+  .step h3 { margin:8px 0 8px; font-size:1.08rem; }
+  .step p { margin:0; color:var(--muted); font-size:.93rem; }
+  .mini { display:flex; gap:5px; margin:12px 0 4px; }
+  .mini b { width:34px; height:34px; display:grid; place-items:center; border-radius:7px; font-weight:800; background:var(--absent); }
+  .mini b.c { background:var(--correct); } .mini b.p { background:var(--present); } .mini b.e { background:var(--tile); border:1.5px solid var(--tile-border); } .mini b.s { background:rgba(255,194,26,.16); border:2px solid var(--yellow); }
+  .legend { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:8px; font-size:.85rem; color:var(--muted); }
+  .legend span::before { content:""; display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:6px; vertical-align:-1px; background:var(--c); }
+
+  /* Ekranlar vitrini */
+  .showcase { display:grid; grid-template-columns:repeat(3, 1fr); gap:28px; align-items:start; }
+  @media (max-width:980px){ .showcase { grid-template-columns:none; grid-auto-flow:column; grid-auto-columns:min(300px, 80vw); overflow-x:auto; scroll-snap-type:x mandatory; padding:10px 4px 24px; margin:0 -16px; padding-inline:16px; } .showcase figure { scroll-snap-align:center; } }
+  .showcase figure { margin:0; text-align:center; }
+  .showcase .phone { width:100%; max-width:300px; }
+  .showcase figcaption { margin-top:16px; font-weight:700; }
+  .showcase figcaption small { display:block; color:var(--muted); font-weight:500; }
+  .swipe-hint { display:none; text-align:center; color:var(--dim); font-size:.82rem; margin-top:-6px; }
+  @media (max-width:980px){ .swipe-hint { display:block; } }
+
+  /* Sayılar */
+  .stats { display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; }
+  @media (max-width:760px){ .stats { grid-template-columns:repeat(2, 1fr); } }
+  .stat { text-align:center; padding:24px 10px; border-radius:var(--radius); background:var(--panel); border:1px solid var(--border); }
+  .stat b { display:block; font-size:clamp(1.9rem, 4vw, 2.6rem); font-weight:900; color:var(--yellow); line-height:1.1; }
+  .stat span { color:var(--muted); font-size:.92rem; }
+
+  /* SSS */
+  .faq { max-width:760px; margin:0 auto; }
+  details { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:0 20px; margin-bottom:10px; }
+  details[open] { border-color:rgba(255,194,26,.45); }
+  summary { cursor:pointer; list-style:none; padding:16px 0; font-weight:700; display:flex; justify-content:space-between; gap:12px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::after { content:"+"; color:var(--yellow); font-size:1.3rem; line-height:1; transition:transform .2s; }
+  details[open] summary::after { transform:rotate(45deg); }
+  details p { margin:0 0 16px; color:var(--muted); }
+
+  /* Son çağrı */
+  .final { text-align:center; padding:84px 0; }
+  .final-box { position:relative; overflow:hidden; border-radius:32px; padding:56px 20px; border:1px solid var(--border);
+    background:radial-gradient(70% 90% at 50% 0%, rgba(40,58,170,.9), var(--navy-800)); }
+  .final-box .icon { width:96px; height:96px; border-radius:24px; margin:0 auto 18px; box-shadow:0 20px 40px rgba(0,0,0,.4); }
+  .final-box p { color:var(--muted); max-width:30em; margin:0 auto 26px; }
+
+  /* Alt bilgi */
+  footer { border-top:1px solid var(--border); padding:34px 0 40px; color:var(--muted); font-size:.92rem; }
+  .foot { display:flex; flex-wrap:wrap; gap:18px 32px; justify-content:space-between; align-items:flex-start; }
+  .foot .brand { color:var(--text); }
+  .foot-links { display:flex; flex-wrap:wrap; gap:8px 18px; }
+  .foot-links a { text-decoration:none; color:var(--muted); }
+  .foot-links a:hover { color:var(--yellow); }
+  .foot .en { margin-top:18px; font-size:.84rem; color:var(--dim); max-width:56em; }
+  .foot .copy { margin-top:10px; font-size:.84rem; color:var(--dim); }
+
+  .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity:1; transform:none; }
+  @media (prefers-reduced-motion:reduce){ .reveal { opacity:1; transform:none; } }
 </style>
 </head>
 <body>
-<main>
-  <a class="back" href="../">← Azas Lab.</a>
-  <h1>Emojiland</h1>
-  <p class="sub">Emojilerden Türkçe kelimeyi bul! · Guess the Turkish word from emojis.</p>
 
-  <div class="clue" aria-label="Örnek ipucu"><span>🧞</span><span>🤞</span><span>🙏</span></div>
-  <div class="tiles" aria-label="Cevap: DİLEK"><b>D</b><b>İ</b><b class="n">L</b><b>E</b><b>K</b></div>
-
-  <a class="play" href="https://play.google.com/store/apps/details?id=com.emojiland.oyun">Google Play'den indir</a>
-
-  <div class="card">
-    <h2>Nasıl oynanır?</h2>
-    <ul>
-      <li>Ekranda 2–3 emoji görünür; anlattıkları Türkçe kelimeyi 6 denemede bul.</li>
-      <li><strong>Yeşil</strong> harf doğru yerde, <strong>turuncu</strong> harf kelimede var ama başka yerde, koyu harf kelimede yok.</li>
-      <li>Emojiye dokununca adını görürsün; cevabı ele veren adlar oyun bitene kadar kilitli kalır.</li>
-    </ul>
+<!-- Üst çubuk -->
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="icon.png" alt="" width="36" height="36">Emojiland</a>
+    <nav class="nav-links" aria-label="Sayfa içi">
+      <a class="hide-m" href="#dene">Hemen dene</a>
+      <a class="hide-m" href="#ozellikler">Özellikler</a>
+      <a class="hide-m" href="#sss">SSS</a>
+      <a href="https://azasdestek.github.io/">Azas Lab.</a>
+      <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.emojiland.oyun" rel="noopener">İndir</a>
+    </nav>
   </div>
+</header>
 
-  <div class="card">
-    <h2>Neler var?</h2>
-    <ul>
-      <li><strong>Günün Bulmacası:</strong> herkese aynı kelime, her gün İstanbul saatiyle 00:00'da yenilenir.</li>
-      <li><strong>Serbest Mod:</strong> 3000 bulmaca, zorluk ve kategori seçimi.</li>
-      <li><strong>Liderlik tablosu:</strong> günün şampiyonları, haftalık ve tüm zamanlar sıralaması.</li>
-      <li>İpuçları, günlük giriş ödülleri, seriler, başarımlar ve sesli okuma.</li>
-    </ul>
-  </div>
+<main id="top">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="floaters" aria-hidden="true">
+      <span style="left:4%;top:12%">🧞</span><span style="left:46%;top:6%;animation-delay:-3s">🎂</span>
+      <span style="left:88%;top:18%;animation-delay:-6s">🎻</span><span style="left:12%;top:74%;animation-delay:-2s">🌸</span>
+      <span style="left:52%;top:86%;animation-delay:-8s">🦉</span><span style="left:93%;top:70%;animation-delay:-5s">🚀</span>
+      <span style="left:30%;top:40%;animation-delay:-9s;opacity:.1">🤞</span>
+    </div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><i></i>Google Play'de yayında · Ücretsiz</span>
+        <h1>Emojilerden <em>kelimeyi</em> bul!</h1>
+        <p class="lead">2–3 emoji, tek bir Türkçe kelime, 6 tahmin hakkı. Her sabah yeni bir bulmaca, arkadaşlarınla aynı kelime ve <b>Günün şampiyonları</b> arasına girme şansı.</p>
 
-  <p class="en">Emojiland is a Turkish word puzzle game: 2–3 emojis describe a Turkish word and you have 6 tries to guess it. Daily puzzle, 3000-puzzle free mode and leaderboards.</p>
+        <div class="clue-demo" aria-label="Örnek bulmaca: cin, parmak çarpraz, dua">
+          <div class="em">🧞</div><span class="plus">+</span><div class="em">🤞</div><span class="plus">+</span><div class="em">🙏</div>
+        </div>
+        <div class="tiles-demo" aria-label="Cevap: DİLEK"><b>D</b><b>İ</b><b class="p">L</b><b>E</b><b>K</b></div>
 
-  <p><a href="gizlilik.html">Gizlilik Politikası / Privacy Policy</a> · <a href="gizlilik.html#veri-silme">Verilerimi sil / Delete my data</a> · <a href="kullanim-sartlari.html">Kullanım Şartları / Terms of Use</a></p>
+        <div class="hero-cta" style="margin-top:28px">
+          <a class="btn btn-play" href="https://play.google.com/store/apps/details?id=com.emojiland.oyun" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1B1F3B" d="M4 2.8v18.4c0 .5.5.8.9.6L21 12.6c.4-.2.4-.9 0-1.1L4.9 2.2c-.4-.2-.9.1-.9.6z"/></svg>
+            <span><small>Ücretsiz indir</small>Google Play</span>
+          </a>
+          <a class="btn btn-ghost" href="#dene">🎮 Tarayıcıda dene</a>
+        </div>
+        <div class="badges">
+          <span><b>4400</b> bulmaca</span><span><b>26</b> kategori</span><span><b>Her gün</b> yeni kelime</span><span>🇹🇷 <b>Türkçe</b> Q klavye</span>
+        </div>
+      </div>
 
-  <footer>Geliştirici / Developer: Azas Lab. · İletişim / Contact: <a href="mailto:azas.destek@gmail.com">azas.destek@gmail.com</a></footer>
+      <!-- Oyun ekranı (güncel tasarım) -->
+      <div aria-hidden="true">
+        <div class="phone tilt">
+          <div class="screen">
+            <div class="sbar"><span>9:41</span><span>▮▮▮ 🔋</span></div>
+            <div class="topbar"><span>←</span><span>Günün Bulmacası #27</span><span>🏳️</span><span class="coins">🪙 240</span></div>
+            <div class="s-clue"><div>🧞</div><i>+</i><div>🤞</div><i>+</i><div>🙏</div></div>
+            <div class="s-labels"><span>? dokun</span><span>🔒</span><span>? dokun</span></div>
+            <div class="s-pills"><span>5 harf</span><span>Orta</span></div>
+            <div class="s-grid">
+              <b class="p">K</b><b class="a">A</b><b class="p">D</b><b class="c">E</b><b class="a">R</b>
+              <b class="c">D</b><b class="p">E</b><b class="a">R</b><b class="p">İ</b><b class="a">N</b>
+              <b>D</b><b>İ</b><b class="sel">L</b><b>E</b><b>K</b>
+              <b></b><b></b><b></b><b></b><b></b>
+              <b></b><b></b><b></b><b></b><b></b>
+              <b></b><b></b><b></b><b></b><b></b>
+            </div>
+            <div class="s-hints"><div>💡 Harf aç<small>🪙 30</small></div><div>🧹 Ele<small>🪙 20</small></div><div>🏷️ Kategori<small>🪙 10</small></div><div class="free">🎬 Bedava<small>harf</small></div></div>
+            <div class="s-kb">
+              <div><span>Q</span><span>W</span><span class="p">E</span><span class="a">R</span><span>T</span><span>Y</span><span>U</span><span>I</span><span>O</span><span>P</span><span>Ğ</span><span>Ü</span></div>
+              <div><span class="a">A</span><span>S</span><span class="c">D</span><span>F</span><span>G</span><span>H</span><span>J</span><span class="p">K</span><span>L</span><span>Ş</span><span class="p">İ</span><span class="w13">⌫</span></div>
+              <div><span class="sp"></span><span>Z</span><span>X</span><span>C</span><span>V</span><span>B</span><span class="a">N</span><span>M</span><span>Ö</span><span>Ç</span><span class="w24">ENTER</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deneme bulmacası -->
+  <section class="try" id="dene">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="tag">Hemen dene</span>
+        <h2>İndirmeden önce <em>bir tur</em> oyna</h2>
+        <p>Emojilere bak, kelimeyi yaz, ENTER'a bas. Yanlış harfi düzeltmek için kutuya dokunman yeterli.</p>
+      </div>
+
+      <div class="game reveal" id="game">
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+        <div class="g-top"><span>Deneme bulmacası <span class="num" id="gnum">#1</span></span><button type="button" id="skip">Başka bulmaca ↻</button></div>
+        <div class="g-clue" id="gclue" aria-live="polite"></div>
+        <div class="g-pills"><span id="glen">5 harf</span><span id="gcat">kategori</span></div>
+        <div class="board" id="board" aria-label="Tahmin tablosu"></div>
+        <div class="kb" id="kb" aria-label="Klavye"></div>
+        <p class="g-hint">Bilgisayarda klavyenle de yazabilirsin.</p>
+
+        <div class="g-end" id="gend" role="dialog" aria-modal="false" aria-labelledby="gendTitle">
+          <div class="big" id="gendEmoji">🎉</div>
+          <h3 id="gendTitle">Tebrikler!</h3>
+          <div class="ans" id="gendAns"></div>
+          <a class="mean" id="gendMean" href="#" target="_blank" rel="noopener">📖 Anlamını gör · Vikisözlük</a>
+          <p id="gendText">Uygulamada seni 4400 bulmaca, her gün yeni bir kelime ve sıralama bekliyor.</p>
+          <div class="acts">
+            <a class="btn btn-play" href="https://play.google.com/store/apps/details?id=com.emojiland.oyun" rel="noopener">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1B1F3B" d="M4 2.8v18.4c0 .5.5.8.9.6L21 12.6c.4-.2.4-.9 0-1.1L4.9 2.2c-.4-.2-.9.1-.9.6z"/></svg>
+              <span><small>Devamı uygulamada</small>Ücretsiz indir</span>
+            </a>
+            <button class="btn btn-ghost" type="button" id="again">Bir tane daha ↻</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nasıl oynanır -->
+  <section id="nasil">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="tag">Nasıl oynanır?</span>
+        <h2>Üç adımda <em>öğren</em>, ömür boyu oyna</h2>
+      </div>
+      <div class="how">
+        <div class="step reveal">
+          <span class="n">1</span>
+          <h3>Emojilere bak</h3>
+          <p>Ekranda 2–3 emoji var. Hepsi birlikte tek bir Türkçe kelimeyi anlatıyor. Emojiye dokununca adını görürsün; cevabı ele veren adlar 🔒 kilitli.</p>
+          <div class="mini" aria-hidden="true" style="font-size:1.4rem"><b class="e">🎂</b><b class="e">🕯️</b><b class="e">🎉</b></div>
+        </div>
+        <div class="step reveal">
+          <span class="n">2</span>
+          <h3>Tahmin et, renklere bak</h3>
+          <p>Her tahminden sonra harfler renklenir. 6 hakkın var; ne kadar erken bilirsen o kadar çok puan.</p>
+          <div class="mini" aria-hidden="true"><b class="c">P</b><b class="p">S</b><b class="a">K</b><b class="c">T</b><b class="c">A</b></div>
+          <div class="legend"><span style="--c:var(--correct)">Doğru yer</span><span style="--c:var(--present)">Kelimede var</span><span style="--c:#3a4290">Yok</span></div>
+        </div>
+        <div class="step reveal">
+          <span class="n">3</span>
+          <h3>Yanlışı dokunup düzelt</h3>
+          <p>Hatalı harfi silmek için sona kadar geri gitmene gerek yok: kutuya dokun, sarı çerçeve çıksın, yeni harfi yaz.</p>
+          <div class="mini" aria-hidden="true"><b class="e">P</b><b class="s">S</b><b class="e">S</b><b class="e">T</b><b class="e">A</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Özellikler -->
+  <section id="ozellikler">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="tag">Neler var?</span>
+        <h2>Her gün birkaç dakikalık <em>keyifli</em> zihin egzersizi</h2>
+        <p>Reklamlar seni rahatsız etmesin diye Günün Bulmacası'nda geçiş reklamı yok.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="feat reveal"><div class="ic">📅</div><h3>Günün Bulmacası</h3><p>Herkese aynı kelime. Her gece 00:00'da (İstanbul) yenilenir; serini koru, rozetleri topla.</p></div>
+        <div class="feat reveal"><div class="ic">🏆</div><h3>Günün şampiyonları</h3><p>Bugün, bu hafta ve tüm zamanlar sıralaması. En az denemede, en hızlı bulan zirveye çıkar.</p></div>
+        <div class="feat reveal"><div class="ic">🎯</div><h3>Serbest Mod</h3><p>3000 bulmaca: zorluğu ve kategoriyi sen seç, istediğin kadar oyna.</p></div>
+        <div class="feat reveal"><div class="ic">🗂️</div><h3>Geçmiş Oyunlar</h3><p>Kaçırdığın günlerin bulmacalarını son 365 güne kadar oyna.</p></div>
+        <div class="feat reveal"><div class="ic">💡</div><h3>Akıllı ipuçları</h3><p>Harf aç, yanlış harfleri ele, kategoriyi gör. Takıldıysan 🎬 kısa bir reklamla bedava harf.</p></div>
+        <div class="feat reveal"><div class="ic">📖</div><h3>Kelimeyi öğren</h3><p>Bulduğun kelimenin anlamı tek dokunuşla Vikisözlük'te. Oynarken kelime dağarcığın büyüsün.</p></div>
+        <div class="feat reveal"><div class="ic">🎁</div><h3>Ödüller ve başarımlar</h3><p>7 günlük giriş takvimi, seri hediyeleri ve 10 başarım. Coin'lerini ipuçlarında kullan.</p></div>
+        <div class="feat reveal"><div class="ic">🟩</div><h3>Cevabı vermeden paylaş</h3><p>Sonucunu 🟩🟧⬛ ızgarasıyla arkadaşlarına gönder; kelime gizli kalır.</p></div>
+        <div class="feat reveal"><div class="ic">🎨</div><h3>Herkes için</h3><p>Renk körü modu, tuş titreşimi, sesli okuma ve küçük ekranlara sığan tasarım.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ekranlar -->
+  <section id="ekranlar">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="tag">Uygulamadan</span>
+        <h2>Göz yormayan, <em>parlak</em> bir tasarım</h2>
+      </div>
+      <div class="showcase">
+        <!-- Ana sayfa -->
+        <figure class="reveal">
+          <div class="phone" aria-hidden="true"><div class="screen">
+            <div class="sbar"><span>9:41</span><span>▮▮▮ 🔋</span></div>
+            <div class="topbar"><span>🦊 Kelimeci</span><span class="coins">🪙 240</span><span>⚙️</span></div>
+            <div class="s-logo">EMOJİ😎LAND</div>
+            <div class="s-sub">Emojileri çöz, kelimeyi bul!</div>
+            <div class="s-modes"><div><em>🎯</em>Serbest Mod<small>3000 bulmaca</small></div><div><em>🗂️</em>Geçmiş Oyunlar<small>Kaçırdıklarını oyna</small></div><div><em>📊</em>İstatistik<small>Serin ve dağılım</small></div><div><em>🎁</em>Ödüller<small>Günlük hediye</small></div></div>
+            <div class="s-card"><h4>Günün Bulmacası <span>#27</span></h4><div class="s-q"><div>?</div><div>?</div><div>?</div></div><div class="s-oyna">▶ OYNA</div><div class="s-streak"><b>🔥 Seri: 6</b> · 🏅 En iyi: 14</div></div>
+            <div class="s-card" style="margin-bottom:0"><h4>🏆 Günün şampiyonları</h4>
+              <div class="s-lb"><span>🥇</span><span class="av">😎</span>EmojiUstası<span class="sc">287</span></div>
+              <div class="s-lb"><span>🥈</span><span class="av" style="border-color:#C9CED8">🐼</span>Bulmacaperest<span class="sc">265</span></div>
+              <div class="s-link">Tüm sıralamayı gör ›</div>
+            </div>
+          </div></div>
+          <figcaption>Ana sayfa<small>Modlar, günlük bulmaca ve şampiyonlar</small></figcaption>
+        </figure>
+
+        <!-- Sonuç -->
+        <figure class="reveal">
+          <div class="phone" aria-hidden="true"><div class="screen" style="background:linear-gradient(180deg,#0b1046,#070C3A)">
+            <div class="sbar"><span>9:41</span><span>▮▮▮ 🔋</span></div>
+            <div class="confetti" id="confetti"></div>
+            <div class="s-result">
+              <h5>🎉 Tebrikler!</h5>
+              <div class="emj">🎻 + 🎶 + 🎼</div>
+              <div class="ans">KEMAN</div>
+              <div class="s-mean">📖 Anlamını gör <small>· Vikisözlük</small></div>
+              <div class="s-stats"><div>218<small>Puan</small></div><div>1<small>Deneme</small></div><div>🔥7<small>Seri</small></div><div>+25<small>Coin</small></div></div>
+              <div class="s-break">Temel 150 · Zorluk +37 · Hız +20 · Seri +11</div>
+              <div class="s-share">📤 Sonucu paylaş</div>
+              <div class="s-ghost">🏆 Liderlik tablosu</div>
+            </div>
+          </div></div>
+          <figcaption>İlk denemede bil, puanı kap<small>Ne kadar erken bilirsen o kadar çok puan</small></figcaption>
+        </figure>
+
+        <!-- Liderlik -->
+        <figure class="reveal">
+          <div class="phone" aria-hidden="true"><div class="screen">
+            <div class="sbar"><span>9:41</span><span>▮▮▮ 🔋</span></div>
+            <div class="topbar"><span>←</span><span>🏆 Liderlik Tablosu</span></div>
+            <div class="s-pills" style="justify-content:flex-start;margin-left:2px"><span style="background:var(--yellow);color:var(--key-text);border-color:var(--yellow)">Bugün</span><span>Bu Hafta</span><span>Tüm Zamanlar</span></div>
+            <div class="s-card" style="padding:6px 10px;color:var(--yellow);font-weight:800;font-size:11px">Senin sıran: #5 · 224 puan</div>
+            <div class="s-lb"><span>🥇</span><span class="av">😎</span>EmojiUstası<span class="sc">287</span></div>
+            <div class="s-lb"><span>🥈</span><span class="av" style="border-color:#C9CED8">🐼</span>Bulmacaperest<span class="sc">265</span></div>
+            <div class="s-lb"><span>🥉</span><span class="av" style="border-color:#E08A4A">🦉</span>GeceKuşu<span class="sc">251</span></div>
+            <div class="s-lb"><span style="width:14px;text-align:center">4</span><span class="av" style="border-color:var(--border)">🐝</span>Arıcık<span class="sc">238</span></div>
+            <div class="s-lb me"><span style="width:14px;text-align:center">5</span><span class="av" style="border-color:var(--border)">🦊</span>Kelimeci<span class="sc">224</span></div>
+            <div class="s-lb"><span style="width:14px;text-align:center">6</span><span class="av" style="border-color:var(--border)">🦄</span>Tekboynuz<span class="sc">203</span></div>
+            <div class="s-lb"><span style="width:14px;text-align:center">7</span><span class="av" style="border-color:var(--border)">🐸</span>Vıraklı<span class="sc">190</span></div>
+            <div class="s-lb"><span style="width:14px;text-align:center">8</span><span class="av" style="border-color:var(--border)">🤖</span>Robotik<span class="sc">176</span></div>
+          </div></div>
+          <figcaption>Günün şampiyonları<small>Bugün, bu hafta ve tüm zamanlar</small></figcaption>
+        </figure>
+      </div>
+      <p class="swipe-hint">← kaydır →</p>
+    </div>
+  </section>
+
+  <!-- Sayılar -->
+  <section style="padding-top:24px">
+    <div class="wrap">
+      <div class="stats">
+        <div class="stat reveal"><b>4400</b><span>elle hazırlanmış bulmaca</span></div>
+        <div class="stat reveal"><b>41 bin</b><span>kelimelik Türkçe sözlük</span></div>
+        <div class="stat reveal"><b>26</b><span>kategori, 3 zorluk</span></div>
+        <div class="stat reveal"><b>%100</b><span>ücretsiz</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SSS -->
+  <section id="sss">
+    <div class="wrap">
+      <div class="sec-head reveal"><span class="tag">Sık sorulanlar</span><h2>Merak <em>ettiklerin</em></h2></div>
+      <div class="faq">
+        <details class="reveal"><summary>Emojiland ücretsiz mi?</summary><p>Evet, tamamen ücretsiz. Oyun reklamlarla destekleniyor; uygulama içi satın alma yok. Günün Bulmacası'nda geçiş reklamı gösterilmez.</p></details>
+        <details class="reveal"><summary>Her gün kaç bulmaca var?</summary><p>Her gün herkese aynı olan bir Günün Bulmacası gelir. Daha fazlasını isteyenler için Serbest Mod'da 3000 bulmaca ve Geçmiş Oyunlar'da son 365 günün bulmacaları var.</p></details>
+        <details class="reveal"><summary>Hangi telefonlarda çalışır?</summary><p>Android 8.0 ve üzeri tüm telefon ve tabletlerde. Emojiler, eski telefonlarda da aynı görünsün diye uygulamanın içinde geliyor.</p></details>
+        <details class="reveal"><summary>Hesap açmam gerekiyor mu?</summary><p>Hayır. Sıralamada görünmek için yalnızca bir takma ad ve avatar seçiyorsun; e-posta ya da şifre istenmez.</p></details>
+        <details class="reveal"><summary>Takıldım, ne yapabilirim?</summary><p>Harf aç, yanlış harfleri ele ya da kategoriyi gör. Coin'in yoksa kısa bir reklam izleyip bedava harf al. Hiç olmazsa 🏳️ ile cevabı görüp çıkabilirsin.</p></details>
+        <details class="reveal"><summary>Verilerimi nasıl sildirebilirim?</summary><p><a href="gizlilik.html#veri-silme" style="color:var(--yellow)">Verilerimi sil</a> sayfasındaki adımları izleyebilir ya da <a href="mailto:azas.destek@gmail.com" style="color:var(--yellow)">azas.destek@gmail.com</a> adresine yazabilirsin.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Son çağrı -->
+  <section class="final">
+    <div class="wrap">
+      <div class="final-box reveal">
+        <img class="icon" src="icon.png" alt="Emojiland simgesi" width="96" height="96">
+        <h2>Bugünün kelimesi seni <em>bekliyor</em></h2>
+        <p>İndir, ilk bulmacanı çöz, serini başlat. Bakalım yarın Günün şampiyonları arasında olacak mısın?</p>
+        <a class="btn btn-play" href="https://play.google.com/store/apps/details?id=com.emojiland.oyun" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#1B1F3B" d="M4 2.8v18.4c0 .5.5.8.9.6L21 12.6c.4-.2.4-.9 0-1.1L4.9 2.2c-.4-.2-.9.1-.9.6z"/></svg>
+          <span><small>Ücretsiz indir</small>Google Play</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="https://azasdestek.github.io/"><img src="icon.png" alt="" width="32" height="32">Azas Lab.</a>
+        <div style="margin-top:8px">İletişim / Contact: <a href="mailto:azas.destek@gmail.com" style="color:var(--yellow);text-decoration:none">azas.destek@gmail.com</a></div>
+      </div>
+      <nav class="foot-links" aria-label="Yasal">
+        <a href="https://azasdestek.github.io/">← Azas Lab. ana sayfa</a>
+        <a href="https://azasdestek.github.io/emojiland/gizlilik.html">Gizlilik Politikası / Privacy Policy</a>
+        <a href="https://azasdestek.github.io/emojiland/gizlilik.html#veri-silme">Verilerimi sil / Delete my data</a>
+        <a href="https://azasdestek.github.io/emojiland/kullanim-sartlari.html">Kullanım Şartları / Terms of Use</a>
+      </nav>
+    </div>
+    <p class="en">Emojiland is a free Turkish word puzzle game for Android: 2–3 emojis describe a Turkish word and you have 6 tries to guess it. A new daily puzzle for everyone, a 3000-puzzle free mode, past puzzles and daily leaderboards.</p>
+    <p class="copy">© <span id="yr">2026</span> Azas Lab. · Google Play ve Google Play logosu Google LLC'nin ticari markalarıdır.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var PLAY = "https://play.google.com/store/apps/details?id=com.emojiland.oyun";
+  // Sayfadaki deneme bulmacaları (kolay seviye)
+  var PUZZLES = [
+    { w: "PASTA", e: ["🎂", "🕯️", "🎉"], c: "yiyecek" },
+    { w: "KEMAN", e: ["🎻", "🎶", "🎼"], c: "müzik" },
+    { w: "ÇİÇEK", e: ["🌸", "🌼", "🐝"], c: "doğa" },
+    { w: "MELEK", e: ["😇", "🪽", "☁️"], c: "insan" },
+    { w: "SABAH", e: ["🌅", "☕", "⏰"], c: "zaman" },
+    { w: "ZİRVE", e: ["🏔️", "⬆️", "🚩"], c: "doğa" },
+    { w: "PEMBE", e: ["🩷", "🌸", "🦩"], c: "renk" },
+    { w: "BALTA", e: ["🪓", "🪵", "🌲"], c: "eşya" }
+  ];
+  var ROWS = 6, LEN = 5;
+  var KEYS = [
+    ["Q","W","E","R","T","Y","U","I","O","P","Ğ","Ü"],
+    ["A","S","D","F","G","H","J","K","L","Ş","İ","⌫"],
+    ["_","Z","X","C","V","B","N","M","Ö","Ç","ENTER"]
+  ];
+  var ALLOWED = "ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ";
+
+  var $ = function (id) { return document.getElementById(id); };
+  var board = $("board"), kb = $("kb"), toastEl = $("toast"), endEl = $("gend");
+  var idx = 0, guesses = [], cur = [], sel = null, over = false, keyState = {}, toastT;
+
+  function upper(s) { return s.toLocaleUpperCase("tr-TR"); }
+  function lower(s) { return s.toLocaleLowerCase("tr-TR"); }
+
+  function evaluate(ans, g) {
+    var res = new Array(LEN).fill("a"), left = {};
+    for (var i = 0; i < LEN; i++) { if (g[i] === ans[i]) res[i] = "c"; else left[ans[i]] = (left[ans[i]] || 0) + 1; }
+    for (var j = 0; j < LEN; j++) { if (res[j] !== "c" && left[g[j]] > 0) { res[j] = "p"; left[g[j]]--; } }
+    return res;
+  }
+
+  function buildBoard() {
+    board.innerHTML = "";
+    for (var r = 0; r < ROWS; r++) {
+      var row = document.createElement("div"); row.className = "row";
+      for (var c = 0; c < LEN; c++) {
+        var t = document.createElement("div"); t.className = "tile"; t.dataset.r = r; t.dataset.c = c;
+        t.addEventListener("click", onTileTap);
+        row.appendChild(t);
+      }
+      board.appendChild(row);
+    }
+  }
+  function buildKeyboard() {
+    kb.innerHTML = "";
+    KEYS.forEach(function (row) {
+      var r = document.createElement("div"); r.className = "r";
+      row.forEach(function (k) {
+        var b = document.createElement("button"); b.type = "button";
+        if (k === "_") { b.className = "sp"; b.tabIndex = -1; b.setAttribute("aria-hidden", "true"); }
+        else if (k === "⌫") { b.className = "w13"; b.setAttribute("aria-label", "Sil"); b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M21 5H9l-6 7 6 7h12zM12 9l6 6m0-6-6 6"/></svg>'; b.dataset.k = "⌫"; }
+        else if (k === "ENTER") { b.className = "enter"; b.textContent = "ENTER"; b.dataset.k = "ENTER"; }
+        else { b.textContent = k; b.dataset.k = k; }
+        if (b.dataset.k) b.addEventListener("click", function () { press(b.dataset.k); });
+        r.appendChild(b);
+      });
+      kb.appendChild(r);
+    });
+  }
+
+  function load(n) {
+    idx = (n + PUZZLES.length) % PUZZLES.length;
+    var p = PUZZLES[idx];
+    guesses = []; cur = new Array(LEN).fill(""); sel = null; over = false; keyState = {};
+    $("gnum").textContent = "#" + (idx + 1);
+    $("gclue").innerHTML = p.e.map(function (e) { return "<div>" + e + "</div>"; }).join("<i>+</i>");
+    $("glen").textContent = LEN + " harf";
+    $("gcat").textContent = "🏷️ " + p.c;
+    endEl.classList.remove("show");
+    buildBoard(); render(); paintKeys();
+  }
+
+  function render() {
+    var rows = board.children;
+    for (var r = 0; r < ROWS; r++) {
+      for (var c = 0; c < LEN; c++) {
+        var t = rows[r].children[c];
+        t.className = "tile";
+        if (r < guesses.length) { t.textContent = guesses[r].g[c]; t.classList.add(guesses[r].s[c]); }
+        else if (r === guesses.length && !over) {
+          t.textContent = cur[c]; t.classList.add("active");
+          if (cur[c]) t.classList.add("filled");
+          if (sel === c) t.classList.add("sel");
+        } else t.textContent = "";
+      }
+    }
+  }
+  function paintKeys() {
+    kb.querySelectorAll("button[data-k]").forEach(function (b) {
+      b.classList.remove("c", "p", "a");
+      var s = keyState[b.dataset.k]; if (s) b.classList.add(s);
+    });
+  }
+  function toast(msg) {
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    clearTimeout(toastT); toastT = setTimeout(function () { toastEl.classList.remove("show"); }, 1600);
+  }
+  function tileAt(r, c) { return board.children[r].children[c]; }
+
+  function onTileTap(e) {
+    if (over) return;
+    var r = +e.currentTarget.dataset.r, c = +e.currentTarget.dataset.c;
+    if (r !== guesses.length) return;
+    sel = (sel === c) ? null : c;   // aynı kutuya tekrar dokununca seçim kalkar
+    render();
+  }
+
+  function press(k) {
+    if (over) return;
+    if (k === "ENTER") return submit();
+    if (k === "⌫") {
+      if (sel !== null && cur[sel]) { cur[sel] = ""; }
+      else { for (var i = LEN - 1; i >= 0; i--) if (cur[i]) { cur[i] = ""; break; } sel = null; }
+      return render();
+    }
+    if (ALLOWED.indexOf(k) < 0) return;
+    var pos = sel !== null ? sel : cur.indexOf("");
+    if (pos < 0) return;
+    cur[pos] = k; sel = null; render();
+    var t = tileAt(guesses.length, pos); t.classList.add("pop"); setTimeout(function () { t.classList.remove("pop"); }, 130);
+  }
+
+  function submit() {
+    var g = cur.join("");
+    if (cur.indexOf("") >= 0) { shake(); return toast("Kelime " + LEN + " harf olmalı"); }
+    if (guesses.some(function (x) { return x.g.join("") === g; })) { shake(); return toast("Bu kelimeyi zaten denedin"); }
+    var ans = PUZZLES[idx].w.split(""), gs = g.split(""), s = evaluate(ans, gs), r = guesses.length;
+    guesses.push({ g: gs, s: s }); cur = new Array(LEN).fill(""); sel = null;
+    var win = s.every(function (x) { return x === "c"; });
+    if (win || guesses.length >= ROWS) over = true;
+    // Kart çevirme animasyonu
+    var rowEl = board.children[r];
+    for (var c = 0; c < LEN; c++) (function (c) {
+      var t = rowEl.children[c];
+      t.textContent = gs[c]; t.className = "tile filled";
+      setTimeout(function () { t.classList.add("flip"); }, c * 180);
+      setTimeout(function () { t.classList.add(s[c]); }, c * 180 + 250);
+    })(c);
+    var rank = { c: 3, p: 2, a: 1 };
+    gs.forEach(function (ch, i) { if (!keyState[ch] || rank[s[i]] > rank[keyState[ch]]) keyState[ch] = s[i]; });
+    setTimeout(function () {
+      render(); paintKeys();
+      if (win) { for (var c = 0; c < LEN; c++) (function (c) { setTimeout(function () { tileAt(r, c).classList.add("win"); }, c * 90); })(c); setTimeout(function () { finish(true); }, 900); }
+      else if (over) setTimeout(function () { finish(false); }, 500);
+    }, LEN * 180 + 300);
+  }
+  function shake() { var row = board.children[guesses.length]; if (!row) return; row.classList.remove("shake"); void row.offsetWidth; row.classList.add("shake"); }
+
+  function finish(won) {
+    var p = PUZZLES[idx], pts = [150, 125, 100, 75, 50, 25][guesses.length - 1];
+    $("gendEmoji").textContent = won ? "🎉" : "😔";
+    $("gendTitle").textContent = won ? (guesses.length === 1 ? "İlk denemede! Efsane 🤯" : "Tebrikler!") : "Bu sefer olmadı";
+    $("gendAns").textContent = p.w;
+    $("gendMean").href = "https://tr.wiktionary.org/w/index.php?search=" + encodeURIComponent(lower(p.w)) + "&go=Git";
+    $("gendText").textContent = won
+      ? guesses.length + ". denemede buldun, uygulamada bu tur " + pts + " temel puan ederdi. Seni 4400 bulmaca ve Günün şampiyonları sıralaması bekliyor."
+      : "Uygulamada ipuçlarıyla harf açabilir, takılınca bedava harf alabilirsin. Her gün yeni bir şans!";
+    endEl.classList.add("show");
+  }
+
+  // Fiziksel klavye (Türkçe i/İ, ı/I doğru büyür)
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var gameEl = $("game"), rect = gameEl.getBoundingClientRect();
+    if (rect.bottom < 0 || rect.top > innerHeight) return;           // yalnızca oyun görünürken
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+    if (e.key === "Enter") { e.preventDefault(); press("ENTER"); return; }
+    if (e.key === "Backspace") { e.preventDefault(); press("⌫"); return; }
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      if (over) return; e.preventDefault();
+      var d = e.key === "ArrowLeft" ? -1 : 1, base = sel === null ? (d > 0 ? -1 : LEN) : sel;
+      sel = Math.max(0, Math.min(LEN - 1, base + d)); render(); return;
+    }
+    if (e.key.length === 1) { var k = upper(e.key); if (ALLOWED.indexOf(k) >= 0) { e.preventDefault(); press(k); } }
+  });
+
+  $("skip").addEventListener("click", function () { load(idx + 1); });
+  $("again").addEventListener("click", function () { load(idx + 1); });
+
+  buildKeyboard();
+  load(Math.floor(Math.random() * PUZZLES.length));
+
+  // Konfeti (sonuç ekranı vitrini)
+  var conf = $("confetti"), colors = ["#FFC21A", "#12B37E", "#F39C12", "#85C0F9", "#EF4444", "#ffffff"];
+  for (var i = 0; i < 28; i++) {
+    var d = document.createElement("i");
+    d.style.left = (Math.random() * 100) + "%"; d.style.top = (Math.random() * 45) + "%";
+    d.style.background = colors[i % colors.length]; d.style.transform = "rotate(" + (Math.random() * 180) + "deg)";
+    conf.appendChild(d);
+  }
+
+  // Kaydırınca beliren bölümler
+  var els = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (ents) {
+      ents.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: .12 });
+    els.forEach(function (el) { io.observe(el); });
+  } else els.forEach(function (el) { el.classList.add("in"); });
+
+  $("yr").textContent = new Date().getFullYear();
+})();
+</script>
 </body>
 </html>
