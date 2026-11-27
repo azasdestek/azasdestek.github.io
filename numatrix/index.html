@@ -127,7 +127,9 @@
 
   .themes { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
   .theme { display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); font-weight: 700; }
-  .theme i { width: 22px; height: 22px; border-radius: 6px; background: var(--c); box-shadow: 0 0 12px var(--c); }
+  .theme i { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--c), var(--c2)); box-shadow: 0 0 12px var(--c); flex: none; }
+  .theme.light i { box-shadow: 0 0 0 3px var(--bg), 0 0 10px rgba(255,255,255,.25); }
+  .theme-group { width: 100%; margin: 6px 0 -2px; font-size: 13px; letter-spacing: 2px; color: var(--dim, #8792c4); }
 
   .final { text-align: center; padding: 64px 22px; border-radius: 26px; border: 1px solid rgba(57,255,20,.35);
     background: radial-gradient(600px 260px at 50% 0%, rgba(57,255,20,.14), transparent 70%), var(--panel); }
@@ -201,7 +203,7 @@
       </div>
       <div class="chips">
         <span class="chip"><b>5</b> <span data-lang-tr>zorluk</span><span data-lang-en>levels</span></span>
-        <span class="chip"><b>5</b> <span data-lang-tr>tema</span><span data-lang-en>themes</span></span>
+        <span class="chip"><b>16</b> <span data-lang-tr>tema</span><span data-lang-en>themes</span></span>
         <span class="chip"><b>40</b> <span data-lang-tr>dil</span><span data-lang-en>languages</span></span>
         <span class="chip"><span data-lang-tr>İnternetsiz oynanır</span><span data-lang-en>Plays offline</span></span>
       </div>
@@ -258,11 +260,24 @@
       <figure><img loading="lazy" data-n="06" alt="Ekran 6 / Screen 6"></figure>
     </div>
     <div class="themes" aria-label="Temalar / Themes">
-      <span class="theme" style="--c:#39ff14"><i></i>Matrix</span>
-      <span class="theme" style="--c:#f4f6ff"><i></i><span data-lang-tr>Gündüz</span><span data-lang-en>Daylight</span></span>
-      <span class="theme" style="--c:#ff2e97"><i></i><span data-lang-tr>Siber</span><span data-lang-en>Cyber</span></span>
-      <span class="theme" style="--c:#00e5ff"><i></i><span data-lang-tr>Elektrik</span><span data-lang-en>Electric</span></span>
-      <span class="theme" style="--c:#ffb000"><i></i><span data-lang-tr>Gün Batımı</span><span data-lang-en>Sunset</span></span>
+      <p class="theme-group"><span data-lang-tr>KOYU</span><span data-lang-en>DARK</span></p>
+      <span class="theme" style="--c:#39ff14;--c2:#00e5ff"><i></i>Matrix</span>
+      <span class="theme" style="--c:#ff2e97;--c2:#b026ff"><i></i><span data-lang-tr>Siber</span><span data-lang-en>Cyber</span></span>
+      <span class="theme" style="--c:#00e5ff;--c2:#ff2e97"><i></i><span data-lang-tr>Elektrik</span><span data-lang-en>Electric</span></span>
+      <span class="theme" style="--c:#ff9e2c;--c2:#b026ff"><i></i><span data-lang-tr>Gün Batımı</span><span data-lang-en>Sunset</span></span>
+      <span class="theme" style="--c:#00ffc6;--c2:#8a5cff"><i></i>Aurora</span>
+      <span class="theme" style="--c:#ff4d2e;--c2:#ffc400"><i></i><span data-lang-tr>Lav</span><span data-lang-en>Lava</span></span>
+      <span class="theme" style="--c:#ffd54a;--c2:#ff7ac8"><i></i><span data-lang-tr>Altın</span><span data-lang-en>Gold</span></span>
+      <span class="theme" style="--c:#f5f5f5;--c2:#ff3358"><i></i><span data-lang-tr>Karbon</span><span data-lang-en>Carbon</span></span>
+      <p class="theme-group"><span data-lang-tr>AÇIK</span><span data-lang-en>LIGHT</span></p>
+      <span class="theme light" style="--c:#0057ff;--c2:#e0007a;--bg:#f3f6fc"><i></i><span data-lang-tr>Gündüz</span><span data-lang-en>Daylight</span></span>
+      <span class="theme light" style="--c:#d6246e;--c2:#7b2ff7;--bg:#fff4f7"><i></i>Sakura</span>
+      <span class="theme light" style="--c:#00875f;--c2:#0077c8;--bg:#effaf5"><i></i><span data-lang-tr>Nane</span><span data-lang-en>Mint</span></span>
+      <span class="theme light" style="--c:#b35a00;--c2:#00857a;--bg:#faf5ec"><i></i><span data-lang-tr>Kum</span><span data-lang-en>Sand</span></span>
+      <span class="theme light" style="--c:#6a3de8;--c2:#e0447a;--bg:#f5f2ff"><i></i><span data-lang-tr>Lavanta</span><span data-lang-en>Lavender</span></span>
+      <span class="theme light" style="--c:#007e99;--c2:#ff6b3d;--bg:#ebf8fa"><i></i><span data-lang-tr>Lagün</span><span data-lang-en>Lagoon</span></span>
+      <span class="theme light" style="--c:#e0452b;--c2:#0f6fd8;--bg:#fff3ef"><i></i><span data-lang-tr>Mercan</span><span data-lang-en>Coral</span></span>
+      <span class="theme light" style="--c:#2b2b2b;--c2:#d72638;--bg:#f6f5f1"><i></i><span data-lang-tr>Kağıt</span><span data-lang-en>Paper</span></span>
     </div>
   </section>
 
